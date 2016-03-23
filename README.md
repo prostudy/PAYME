@@ -3,4 +3,5 @@ PAYME es una aplicación que permite a los usuarios crear proyectos y recordator
 
 Referencia de conexión
 http://culttt.com/2012/10/01/roll-your-own-pdo-php-class/
+
 http://phpro.org/tutorials/Introduction-to-PHP-PDO.html#11

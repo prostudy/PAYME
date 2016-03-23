@@ -1,36 +1,47 @@
 <?php
-// Define configuration
+/*
+ * Class is responsible for connecting to the database
+ * Autor: josafatbusio@gmail.com
+ * 
+ * */
 define("DB_HOST", "localhost");
-define("DB_USER", "root");
-define("DB_PASS", "root");
-define("DB_NAME", "drupal_mxd");
 
 class Database{
 	private $host      = DB_HOST;
-	private $user      = DB_USER;
-	private $pass      = DB_PASS;
-	private $dbname    = DB_NAME;
+	private $user      = null;
+	private $pass      = null;
+	private $dbname    = null;
 
 	private $dbh;
+	private $stmt;	
 	private $error;
 	
-	private $stmt;
-
 	public function __construct(){
-		// Set DSN
-		$dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
-		// Set options
-		$options = array(
-				PDO::ATTR_PERSISTENT    => true,
-				PDO::ATTR_ERRMODE       => PDO::ERRMODE_EXCEPTION
-		);
 		// Create a new PDO instanace
 		try{
-			$this->dbh = new PDO($dsn, $this->user, $this->pass, $options);
+			if(!isset($this->dbh)) {
+				// Set DSN
+				$config = parse_ini_file('config.ini');//TODO:CAMBIAR LOS PERMISOS DEL ARCHIVO PARA QUE NO PUEDA SER VISTO
+				$this->user = $config['username'];
+				$this->pass = $config['password'];
+				$this->dbname = $config['dbname'];
+				
+				$dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+				// Set options
+				$options = array(
+						PDO::ATTR_PERSISTENT    => true,
+						PDO::ATTR_ERRMODE       => PDO::ERRMODE_EXCEPTION,
+						//PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"
+						'charset'=>'utf8'
+				);
+				$this->dbh = new PDO($dsn, $this->user, $this->pass, $options );
+			}
 		}
 		// Catch any errors
 		catch(PDOException $e){
 			$this->error = $e->getMessage();
+			$this->dbh = null;
+			$this->stmt = null;
 		}
 	}
 	
@@ -61,6 +72,7 @@ class Database{
 		return $this->stmt->execute();
 	}
 	
+
 	public function resultset(){
 		$this->execute();
 		return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -93,6 +105,17 @@ class Database{
 	
 	public function debugDumpParams(){
 		return $this->stmt->debugDumpParams();
+	}
+	
+	public function closeConnection(){
+		$this->dbh = null;
+		$this->stmt = null;
+		$this->host = null;
+		$this->user = null;
+		$this->pass = null;
+		$this->dbname = null;
+		$this->error = null;
+		//echo "<br>ya cerre";
 	}
 }
 ?>

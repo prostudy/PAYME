@@ -7,8 +7,9 @@ function simpleDataBase(){
 	$database = new Database();
 	
 	try{
-		$database->query('select * from mxd_node where type = :type  order by nid desc limit 2');
-		$database->bind(':type', 'ficha');
+		//$database->query('select * from mxd_node where type = :type  order by nid desc limit 2');
+		//$database->bind(':type', 'ficha');
+		$database->query('select pagetitle from modx_site_content order by id asc limit 7');
 		$rows = $database->resultset(); //$row = $database->single();
 		//echo $database->rowCount();
 		/*echo "<pre>";

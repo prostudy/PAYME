@@ -24,18 +24,21 @@ final class UserDao
 
 	}
 	
-	public function getUser(){
+	public function getUser($email,$password){
 		$database = new Database();
+		$row = array();
 		try{
-			$database->query('select pagetitle,introtext from modx_site_content order by id desc limit 10');
-			$rows = $database->resultset(); //$row = $database->single();
+			$database->query('SELECT * FROM users where email = :email and password = :password limit 1');
+			$database->bind(':email', $email);
+			$database->bind(':password', $password);			
+			$row = $database->single(); //$rows = $database->resultset(); //$row = $database->single();
 		}catch(PDOException $e){
 			echo $e->getMessage();
 		}finally{
 			$database->closeConnection();
 			$database = null;
 		}
-		return $rows;
+		return $row;
 	}
 }
 

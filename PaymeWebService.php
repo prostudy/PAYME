@@ -10,7 +10,7 @@ require_once 'dao/tutorial.php';
 require_once 'dao/UserDao.php';
 require_once('utils/GenericResponse.php');
 /*
-http://localhost/PAYME/PaymeWebService.php?methodName=getUser&user=oscar&password=asdad
+http://localhost:8888/PAYME/PaymeWebService.php?methodName=getUser&email=osjobu@gmail.com&password=12345
 */
 $controllerObject = new PaymeWebService($_REQUEST['methodName'],
 									   isset($_REQUEST['callback']),
@@ -27,27 +27,26 @@ class PaymeWebService {
 	}
 
 	/**
-	 * * Realiza la validación del login cuando no se utiliza facebook
-	 *  @param string  usuario
+	 * * Realiza la validación del login
+	 *  @param string  email
 	 *  @param string  password
 	 */
 	public function getUser(){
-		$user = utf8_encode($_REQUEST['user']);
+		$email = utf8_encode($_REQUEST['email']);
 		$password = utf8_encode($_REQUEST['password']);
 
 		$userDao = UserDao::Instance();
-		$users = $userDao->getUser();
-		//$items = array();
+		$user = $userDao->getUser($email,$password);
+		$items = array();
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
-		if(count( $users ) > 0 ){
+		if(is_array($user) ){
 			//$document = array_values($document);
-			//$items['users'] = $users;
-			$response->setItems($users);
+			$items['user'] = $user;
+			$response->setItems($items);
 		}else{
 			$response->success = false;
 			$response->message = "No se encontro usuario.";
 		}
-		//print_r($userInfo);
 		echo $response->getResponseAsJSON();
 	}
 }

@@ -2,6 +2,27 @@
 // Include database class
 include 'Database.php';
 
+function simpleDataBaseTest(){
+	$database = new Database();
+
+	try{
+		//$database->query('select * from mxd_node where type = :type  order by nid desc limit 2');
+		//$database->bind(':type', 'ficha');
+		$database->query('select * from tabla1');
+		$rows = $database->resultset(); //$row = $database->single();
+		//echo $database->rowCount();
+		echo "<pre>";
+		print_r($rows);
+		echo "</pre>";
+	}catch(PDOException $e){
+		echo $e->getMessage();
+	}finally{
+		$database->closeConnection();
+		$database = null;
+	}
+
+	return $rows;
+}
 
 function simpleDataBase(){
 	$database = new Database();
@@ -53,4 +74,5 @@ function TransactionDataBase(){
 
 //TransactionDataBase();
 //simpleDataBase();
+simpleDataBaseTest();
 ?>

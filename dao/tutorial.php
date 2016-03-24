@@ -1,6 +1,4 @@
 <?php
-// Include database class
-include 'Database.php';
 
 function simpleDataBaseTest(){
 	$database = new Database();
@@ -8,12 +6,15 @@ function simpleDataBaseTest(){
 	try{
 		//$database->query('select * from mxd_node where type = :type  order by nid desc limit 2');
 		//$database->bind(':type', 'ficha');
-		$database->query('select * from tabla1');
+		//$database->query('select * from tabla1');
+		$database->query('select pagetitle,introtext from modx_site_content order by id desc limit 100');
 		$rows = $database->resultset(); //$row = $database->single();
 		//echo $database->rowCount();
+		/*echo json_encode($rows);
 		echo "<pre>";
+		
 		print_r($rows);
-		echo "</pre>";
+		echo "</pre>";*/
 	}catch(PDOException $e){
 		echo $e->getMessage();
 	}finally{
@@ -74,5 +75,5 @@ function TransactionDataBase(){
 
 //TransactionDataBase();
 //simpleDataBase();
-simpleDataBaseTest();
+//simpleDataBaseTest();
 ?>

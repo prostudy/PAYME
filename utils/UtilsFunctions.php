@@ -48,8 +48,8 @@ class UtilsFunctions{
 			              <div style='width:590px'>
 			                <div style='background:url(http://dps.grupoiasa.com/iasaEntitlement/utils/img/topMail.png) no-repeat;width:100%;min-height:75px;display:block'>
 			                  <div style='background-repeat-y:no-repeat;background-size:contain;margin: 0px 14px 0px 16px;background-size:contain;overflow:hidden;background-image:url(http://pmstudykit.com/kitsgdp/images/pleca.png);min-height:75px;'>
-			                  <a href='http://www.nyce.org.mx/' target='_blank'>
-			                    <img src='http://pmstudykit.com/kitsgdp/images/nyce_logo.png' alt='nyce' style='border: none;
+			                  <a href='https://www.facebook.com/maestrosdelmedia/?fref=nf' target='_blank'>
+			                    <img src='https://scontent-dfw1-1.xx.fbcdn.net/hprofile-xpf1/v/t1.0-1/p160x160/1914912_506480059531666_6066849200975198148_n.png?_nc_eui=ARill5Cymg2sVEH8siD_hTY3IcFwsQ8Bcbrsi-oMDTOQ-K_iuld5og&oh=af288ae28f7173faba5cb1da585bc732&oe=577B0A5A' alt='nyce' style='border: none;
 padding: 1em;' target=_blank></a>
 	
 								<!--<a href='http://www.nyce.org.mx/' target='_blank'>
@@ -84,7 +84,7 @@ float: right;' target=_blank>
 				                   </div>
 				                   	
 				                   <div style='margin:20px 0'>
-				                   Normalización y Certificación Electrónica, S.C., NYCE</b> <a href='http://www.nyce.org.mx/'>http://www.nyce.org.mx/</a>
+				                   Plataforma digital para el aprendizaje de Marketing Digital, SEO, Multimedia, Diseño Web, Apps y mucho mas.</b> <a href='https://www.facebook.com/maestrosdelmedia/?fref=nf'>https://www.facebook.com/maestrosdelmedia/?fref=nf</a>
 				                   </div>
 				                   <div style='margin:10px 5px;display:inline-block'></div>
 				                   	
@@ -93,8 +93,8 @@ float: right;' target=_blank>
 				                   	
 				                   <div style='font-size:9px;color:#707070'>
 				                   <br>No respondas a este mensaje.<br>
-				                   Av. Lomas de Sotelo 1097 Col. Lomas de Sotelo, México D.F. Tel. 5395 0777 Para toda la República sin costo 01800-112-NYCE
-				                   <br>Ver la <a href=http://www.nyce.org.mx/index.php/privacidad target=_blank>Política de privacidad</a>
+				                   Fundación en diciembre de 2015
+				                   <br>Ver la <a href=http://www.maestrosdelmedia.com target=_blank>Política de privacidad</a>
 				                   </div></div></div><div class='yj6qo'></div>
 				                   	
 				                   <div style='background:url(http://dps.grupoiasa.com/iasaEntitlement/utils/img/footerMail.png) no-repeat;width:100%;min-height:50px;display:block' class='adL'></div></div>

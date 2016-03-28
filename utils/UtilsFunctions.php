@@ -23,16 +23,16 @@ class UtilsFunctions{
 			$mail = new PHPMailer;
 			//$mail->SMTPDebug = 3;                               // Enable verbose debug output
 			$mail->isSMTP();                                      // Set mailer to use SMTP
-			$mail->Host = 'ozer.artehosting.com.mx';              // Specify main and backup SMTP servers
+			$mail->Host = Constants::EMAIL_HOST;              	  // Specify main and backup SMTP servers
 			$mail->SMTPAuth = true;                               // Enable SMTP authentication
-			$mail->Username = 'ogascon@getsir.mx';                 // SMTP username
-			$mail->Password = '$GmG3ts1mx';                           // SMTP password
+			$mail->Username = Constants::ADMIN_EMAILS_FROM;       // SMTP username
+			$mail->Password = Constants::EMAIL_PASSWORD;          // SMTP password
 			$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
 			$mail->Port = 587;  
 	
-			$mail->setFrom('ogascon@getsir.mx', 'Oscar Gascon');
+			$mail->setFrom(Constants::ADMIN_EMAILS_FROM, Constants::SET_FROM_NAME);
 			$mail->addAddress($to, $name);     // Add a recipient
-			$mail->FromName = utf8_decode('PAYME APP');
+			$mail->FromName = utf8_decode( Constants::SET_FROM_NAME);
 			$mail->isHTML(true);                                  // Set email format to HTML
 	
 			//$mail->AltBody = 'Favor de activa tu cuenta con el siguiente enlace ';

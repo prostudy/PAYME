@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author josafatbusio@gmail.com
+ *
+ */
 final class UserDao
 {
 	/**
@@ -28,7 +32,7 @@ final class UserDao
 		$database = new Database();
 		$row = array();
 		try{
-			$database->query('SELECT * FROM users where email = :email and password = :password limit 1');
+			$database->query('SELECT * FROM users where email = :email and password = :password and active = 1 limit 1');
 			$database->bind(':email', $email);
 			$database->bind(':password', self::krypPassword($password));			
 			$row = $database->single(); //$rows = $database->resultset(); //$row = $database->single();
@@ -89,6 +93,91 @@ final class UserDao
 	 */
 	private static function krypPassword($password){
 		return md5('payme'.sha1('payme&#'.$password ));
+	}
+	
+	
+	/**
+	 * Busca en la base de datos el codigo de activación
+	 * @param string $activationCode
+	 * @return user Regresa el usuario encontrado con dicho codigo de activación
+	 */
+	public function verifyUrlActivation($activationCode){
+		$database = new Database();
+		$user = array();
+		try{
+			$database->query('SELECT idusers,email,name,activation_code FROM users where activation_code = :activation_code  limit 1');
+			$database->bind(':activation_code', $activationCode);
+			$user = $database->single();
+		}catch(PDOException $e){
+			echo $e->getMessage();
+		}finally{
+			$database->closeConnection();
+			$database = null;
+		}
+		return $user;
+	}
+	
+	/**
+	 * Activa la cuenta del usuario que se envia como parametro
+	 * @param array $user
+	 * @param date $activatedon
+	 * @return multitype:number string NULL
+	 */
+	public function setActiveAccount($user,$activation_date){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateUserResult = array();
+		$updateUserResult['rowsUpdated']  = 0;
+		$updateUserResult['error'] = '';
+		
+		try{
+			$database->query("UPDATE users set active = 1, activation_date = :activation_date, activation_code = :activation_codeUpdate WHERE activation_code = :activation_code AND email = :email AND active = 0");
+			$database->bind(':activation_date',  $activation_date);
+			$database->bind(':activation_code',  $user['activation_code']);
+			$database->bind(':activation_codeUpdate',  $user['activation_code']."_ACTIVATED");
+			$database->bind(':email',  $user['email']);
+			$database->execute();
+			$updateUserResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateUserResult['error'] = $e->getMessage();
+		}finally{
+			$database->closeConnection();
+			$database = null;
+		}
+		return $updateUserResult;
+	}
+	
+	
+	/**
+	 * Actualiza el codigo de cambio de password
+	 * @param unknown $email
+	 * @param unknown $resetPasswordCode
+	 * @return multitype:number string NULL
+	 */
+	public function updateResetPasswordCodeforValidUserActive($email,$resetPasswordCode){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateUserResult = array();
+		$updateUserResult['rowsUpdated']  = 0;
+		$updateUserResult['error'] = '';
+	
+		try{
+			$database->query("UPDATE users set reset_password_code = :reset_password_code WHERE email = :email AND active = 1");
+			$database->bind(':reset_password_code',  $resetPasswordCode);
+			$database->bind(':email', $email );
+			$database->execute();
+			$updateUserResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateUserResult['error'] = $e->getMessage();
+		}finally{
+			$database->closeConnection();
+			$database = null;
+		}
+		return $updateUserResult;
 	}
 }
 

@@ -7,7 +7,6 @@
 // Include database class
 require_once 'connection/Database.php';
 require_once 'utils/Constants.php';
-require_once 'dao/tutorial.php';
 require_once 'dao/UserDao.php';
 require_once('utils/GenericResponse.php');
 require_once('utils/CodeGenerator.php');

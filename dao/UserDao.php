@@ -38,10 +38,11 @@ final class UserDao
 			$row = $database->single(); //$rows = $database->resultset(); //$row = $database->single();
 		}catch(PDOException $e){
 			echo $e->getMessage();
-		}finally{
 			$database->closeConnection();
-			$database = null;
 		}
+		$database->closeConnection();
+		$database = null;
+		
 		return $row;
 	}
 	
@@ -79,10 +80,11 @@ final class UserDao
 		}catch(PDOException $e){
 			$database->cancelTransaction();
 			$saveUserResult['error'] = $e->getMessage();
-		}finally{
 			$database->closeConnection();
-			$database = null;
 		}
+		$database->closeConnection();
+		$database = null;
+		
 		return $saveUserResult;
 	}
 	
@@ -110,10 +112,11 @@ final class UserDao
 			$user = $database->single();
 		}catch(PDOException $e){
 			echo $e->getMessage();
-		}finally{
 			$database->closeConnection();
-			$database = null;
 		}
+		$database->closeConnection();
+		$database = null;
+		
 		return $user;
 	}
 	
@@ -142,10 +145,11 @@ final class UserDao
 		}catch(PDOException $e){
 			$database->cancelTransaction();
 			$updateUserResult['error'] = $e->getMessage();
-		}finally{
 			$database->closeConnection();
-			$database = null;
 		}
+		$database->closeConnection();
+		$database = null;
+		
 		return $updateUserResult;
 	}
 	
@@ -173,10 +177,11 @@ final class UserDao
 		}catch(PDOException $e){
 			$database->cancelTransaction();
 			$updateUserResult['error'] = $e->getMessage();
-		}finally{
 			$database->closeConnection();
-			$database = null;
 		}
+		$database->closeConnection();
+		$database = null;
+		
 		return $updateUserResult;
 	}
 }

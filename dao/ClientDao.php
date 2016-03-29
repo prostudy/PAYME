@@ -137,8 +137,51 @@ final class ClientDao
 		return $rows;
 	}
 	
+	/**
+	 * Regresa todos los recordatorios de un proyecto especificado.
+	 * @param int $projectId
+	 * @param int $deleted
+	 * @return array recordatorios del proyecto::
+	 */
+	function getAllRemindersForProjectId($projectId, $deleted){
+		$database = new Database();
+		$rows = array();
+		try{
+			
+			$database->query('SELECT * FROM reminders WHERE projects_idprojects	= :projects_idprojects	 AND deleted = :deleted  limit 50');
+			$database->bind(':projects_idprojects', $projectId);
+			$database->bind(':deleted', $deleted);
+			$rows = $database->resultset(); //$row = $database->single();
+		}catch(PDOException $e){
+			echo $e->getMessage();
+		}finally{
+			$database->closeConnection();
+			$database = null;
+		}
+		return $rows;
+	}	
 	
 	
+	/**
+	 * Recupera el template de un recordatorio
+	 * @param int $templateId
+	 * @return array row
+	 */
+	function getTemplateForReminder($templateId){
+		$database = new Database();
+		$row = array();
+		try{
+			$database->query('SELECT * FROM templates WHERE idtemplates = :idtemplates limit 1');
+			$database->bind(':idtemplates', $templateId);
+			$row = $database->single();
+		}catch(PDOException $e){
+			echo $e->getMessage();
+		}finally{
+			$database->closeConnection();
+			$database = null;
+		}
+		return $row;
+	}
 }
 
 ?>

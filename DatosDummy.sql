@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:3306
--- Generation Time: Mar 29, 2016 at 06:25 PM
+-- Generation Time: Mar 30, 2016 at 12:36 AM
 -- Server version: 5.5.38
 -- PHP Version: 5.6.2
 
@@ -35,7 +35,7 @@ CREATE TABLE `clients` (
 --
 
 INSERT INTO `clients` (`idclients`, `email`, `name`, `lastname`, `company`, `users_idusers`, `createdon`) VALUES
-(1, 'ogascon@iasanet.com.mx', 'Oscar', 'Gascón', 'IASA COMUNICACIÓN', 50, '2016-03-28 00:00:00'),
+(1, 'ogascon@iasanet.com.mx', 'Oscar', 'Gascon', 'IASA COMUNICACIÓN', 50, '2016-03-28 00:00:00'),
 (2, 'mpadilla.espinosa@gmail.com', 'Miriam', 'Padilla', 'GETSIR', 51, '2016-03-29 03:01:06'),
 (3, 'josafatbusio@gmail.com', 'Josafat', 'Busio', 'Sofingware', 51, '2016-03-29 03:01:48'),
 (4, 'gloriabusio@hotmail.com', 'Gloria', 'Busio', 'CASA', 50, '2016-03-29 03:02:32'),
@@ -54,7 +54,7 @@ CREATE TABLE `projects` (
   `paidup` tinyint(1) NOT NULL,
   `logo_image` varchar(45) DEFAULT NULL,
   `createdon` datetime NOT NULL,
-  `deleted` tinyint(1) DEFAULT NULL,
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
   `deleteon` datetime DEFAULT NULL,
   `clients_idclients` int(11) NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
@@ -64,12 +64,12 @@ CREATE TABLE `projects` (
 --
 
 INSERT INTO `projects` (`idprojects`, `description`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES
-(1, 'Desarrollo app Movil', 14000, 0, NULL, '2016-03-28 00:00:00', NULL, NULL, 4),
-(2, 'Sitio web', 9000, 0, NULL, '2016-03-28 00:00:00', NULL, NULL, 1),
-(3, 'Reparacion de computadora', 988, 1, NULL, '2016-03-28 00:00:00', NULL, NULL, 2),
-(4, 'App mobile', 9, 1, NULL, '2016-03-28 00:00:00', NULL, NULL, 2),
-(5, 'Mantenimiento página web', 4000, 0, NULL, '2016-03-29 00:00:00', NULL, NULL, 1),
-(6, 'App para concurso', 13000, 0, NULL, '2016-03-29 00:00:00', NULL, NULL, 3);
+(1, 'Desarrollo app Movil', 14000, 0, NULL, '2016-03-28 00:00:00', 0, NULL, 4),
+(2, 'Sitio web', 9000, 0, NULL, '2016-03-28 00:00:00', 0, NULL, 1),
+(3, 'Reparacion de computadora', 988, 1, NULL, '2016-03-28 00:00:00', 0, NULL, 2),
+(4, 'App mobile', 9, 1, NULL, '2016-03-28 00:00:00', 0, NULL, 2),
+(5, 'Mantenimiento página web', 4000, 0, NULL, '2016-03-29 00:00:00', 0, NULL, 1),
+(6, 'App para concurso', 13000, 0, NULL, '2016-03-29 00:00:00', 0, NULL, 3);
 
 -- --------------------------------------------------------
 
@@ -97,7 +97,7 @@ CREATE TABLE `reminders` (
 INSERT INTO `reminders` (`idreminders`, `date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`) VALUES
 (1, '2016-03-31 00:00:00', 0, '2016-03-29 00:00:00', 0, NULL, 0, NULL, 1, 1),
 (2, '2016-04-01 00:00:00', 0, '2016-03-29 00:00:00', 0, NULL, 0, NULL, 1, 2),
-(3, '2016-04-08 00:00:00', 0, '2016-03-29 00:00:00', 0, NULL, 0, NULL, 2, 1);
+(3, '2016-03-29 16:30:01', 0, '2016-03-29 00:00:00', 0, NULL, 0, NULL, 2, 1);
 
 -- --------------------------------------------------------
 

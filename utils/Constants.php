@@ -10,6 +10,7 @@ class Constants{
 	const URL_REGISTER_CONFIRMATION_CODE = "http://localhost/PAYME/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=";
 	const URL_CHANGE_PASSWORD_CODE = "http://localhost/PAYME/PaymeWebService.php?methodName=ChangePassword&changePasswordCode=";
 	const URL_AVISO_PRIVACIDAD = "";
+	const URL_ERROR_LOGS = "./my-errors.log";
 	
 	//Email
 	const ADMIN_EMAILS_FROM = "ogascon@getsir.mx";

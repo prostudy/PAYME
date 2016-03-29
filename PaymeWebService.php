@@ -53,6 +53,8 @@ class PaymeWebService {
 			//$document = array_values($document);
 			$items['user'] = $user;
 			$response->setItems($items);
+			$response->success = true;
+			$response->message = "Se encontro usuario.";
 		}else{
 			$response->success = false;
 			$response->message = "No se encontro usuario.";

@@ -126,7 +126,7 @@ final class ClientDao
 		$database = new Database();
 		$rows = array();
 		try{
-			$database->query('SELECT * FROM `projects` WHERE clients_idclients = :clientid AND deleted is NULL AND paidup = :paidup limit 50');
+			$database->query('SELECT * FROM `projects` WHERE clients_idclients = :clientid AND deleted = 0 AND paidup = :paidup limit 50');
 			$database->bind(':clientid', $clientId);
 			$database->bind(':paidup', $paidup);
 			$rows = $database->resultset(); //$row = $database->single();

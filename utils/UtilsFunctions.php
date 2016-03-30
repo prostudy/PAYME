@@ -73,7 +73,7 @@ float: right;' target=_blank>
 				                   </div>
 				                   <br>
 				                   <div style='margin-bottom:20px'>
-				                   <b>$urlActivacion<br></b>
+				                   $urlActivacion<br>
 				                   $footerMessage
 				                   </div>
 				                   </div>

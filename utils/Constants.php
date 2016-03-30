@@ -10,13 +10,21 @@ class Constants{
 	const URL_REGISTER_CONFIRMATION_CODE = "http://localhost/PAYME/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=";
 	const URL_CHANGE_PASSWORD_CODE = "http://localhost/PAYME/PaymeWebService.php?methodName=ChangePassword&changePasswordCode=";
 	const URL_AVISO_PRIVACIDAD = "";
-	const URL_ERROR_LOGS = "./my-errors.log";
+	const FILE_CRON_REMAINDERS_ERRORS = "./logs/cronRemindersErrors.log";
 	
 	//Email
 	const ADMIN_EMAILS_FROM = "ogascon@getsir.mx";
 	const EMAIL_HOST = "ozer.artehosting.com.mx";
 	const EMAIL_PASSWORD = '$GmG3ts1mx';
 	const SET_FROM_NAME = 'Oscar Gascon';
+	
+	
+	
+	
+	//Reminders cron
+	const MINUTES = 1; //diferencia de minutos entre de la fecha programada y la actual del servidor
+	const SUBJECT_EMAIL_REMAINDER = "Payment reminder";
+	const FOOTER_EMAIL_REMAINDER = "This is a remainder by the app <b>PAYME</b>.";
 	
 	
 	

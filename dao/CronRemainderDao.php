@@ -4,18 +4,18 @@
  * @author josafatbusio@gmail.com
  *
  * */
-final class CronRemindeDao
+final class CronRemainderDao
 {
 	/**
 	 * Call this method to get singleton
 	 *
-	 * @return CronRemindeDao
+	 * @return CronRemainderDao
 	 */
 	public static function Instance()
 	{
 		static $inst = null;
 		if ($inst === null) {
-			$inst = new CronRemindeDao();
+			$inst = new CronRemainderDao();
 		}
 		return $inst;
 	}
@@ -35,28 +35,29 @@ final class CronRemindeDao
 	 * @param string $email
 	 * @return array client 
 	 */
-	function getReminders(){
+	function getRemainders(){
 		$database = new Database();
 		$rows = array();
 		try{
 			$database->query("SELECT clients.email
-						   ,concat(clients.name,' ',clients.`lastname`) as nameUser
+						   ,concat(clients.name,' ',clients.`lastname`) as clientName
 						   ,clients.`company`
 						   ,projects.`description`
 						   ,projects.`cost`
 						   ,projects.`logo_image`
 						   ,templates.text
 						   ,reminders.`idreminders`
-							FROM reminders, `projects`, clients, templates
+						   ,concat(users.name,' ',users.`lastname`) as userName					
+							FROM reminders, `projects`, clients, templates,users
 							WHERE 1 = 1
 							AND projects.`paidup` = 0 AND projects.`deleted` = 0 /*solo proyectos sin pagar y sin estar eliminados*/
 							AND reminders.send = 0 AND reminders.deleted = 0  /*solo recordatorios no enviados y que no esten eliminados*/
 							AND reminders.`projects_idprojects` = projects.`idprojects` 
 							AND clients.`idclients` = projects.`clients_idclients`
+							AND users.idusers = clients.users_idusers					
 							AND templates.`idtemplates` = reminders.`templates_idtemplates`
-							AND (TIMESTAMPDIFF(MINUTE,  now(),date) > 0 AND TIMESTAMPDIFF(MINUTE,  now(),date) <= 1 ) /*diferencia de minutos de la fecha programada y la actual*/");
-			/*$database->bind(':send', 0);
-			$database->bind(':deleted', 0);*/
+							AND (TIMESTAMPDIFF(MINUTE,  now(),date) > 0 AND TIMESTAMPDIFF(MINUTE,  now(),date) <= :minutes ) /*diferencia de minutos de la fecha programada y la actual*/");
+			$database->bind(':minutes', Constants::MINUTES);
 			$rows = $database->resultset();
 		}catch(PDOException $e){
 			echo $e->getMessage();
@@ -74,7 +75,7 @@ final class CronRemindeDao
 	 * @param unknown $reminderId
 	 * @return multitype:number string NULL
 	 */
-	public function updateRemienderAsSend($reminderId){
+	public function updateRemainderAsSend($remainderId){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateUserResult = array();
@@ -83,7 +84,7 @@ final class CronRemindeDao
 	
 		try{
 			$database->query("UPDATE reminders set send = 1 WHERE idreminders = :idreminders");
-			$database->bind(':idreminders',  $reminderId);
+			$database->bind(':idreminders',  $remainderId);
 			$database->execute();
 			$updateUserResult['rowsUpdated'] = $database->rowCount();
 			$database->endTransaction();

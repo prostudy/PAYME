@@ -28,7 +28,7 @@ class PaymeWebService {
 	public $isJSONP = false;
 	public $callback = "";
 	
-	public function PaymeWebService($methodName,$appKey,$isJSONP=false,$callback=""){
+	public function PaymeWebService($methodName,$isJSONP=false,$callback=""){
 		$this->isJSONP = $isJSONP;
 		$this->callback = $callback;
 // 		$response = new GenericResponse(true,$isJSONP,$callback);

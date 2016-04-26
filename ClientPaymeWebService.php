@@ -115,6 +115,67 @@ class ClientPaymeWebService {
 	
 		$clientDao = ClientDao::Instance();
 		$clients = $clientDao->getClientsForUserId($userid);
+		
+		
+		$clientsPaidup = array();
+		$clientsNotPaidup = array();
+		
+		$i=0;
+		$totalPaidupd = 0;
+		foreach ($clients as $client){
+			$projectsPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],1);
+			$projectsPaidup = self::setRemindersForProjects($projectsPaidup);
+				
+			
+			foreach ($projectsPaidup as $project){
+				$clientsPaidup[$i] = $client;
+				$clientsPaidup[$i]['project'] = $project;
+				$totalPaidupd += $project['cost'];
+				$i++;
+			}
+			$clientsPaidup['total'] = $totalPaidupd;
+		}
+		
+		
+		$i=0;
+		$totalNotPaidupd = 0;
+		foreach ($clients as $client){
+			$projectsNotPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],0);
+			$projectsNotPaidup = self::setRemindersForProjects($projectsNotPaidup);
+		
+				
+			foreach ($projectsNotPaidup as $project){
+				$clientsNotPaidup[$i] = $client;
+				$clientsNotPaidup[$i]['project'] = $project;
+				$totalNotPaidupd += $project['cost'];
+				$i++;
+			}
+			
+			$clientsNotPaidup['total'] = $totalNotPaidupd;
+		}
+				
+				
+		$items = array();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		if(count($clients) > 0 ){
+			$items['clientsPaidup'] = $clientsPaidup;
+			$items['clientsNotPaidup'] = $clientsNotPaidup;
+			$response->setItems($items);
+			$response->success = true;
+			$response->message = "Se encontraron clientes.";
+		}else{
+			$response->success = true;
+			$response->message = "No se encontraron clientes.";
+		}
+		echo  $response->getResponseAsJSON();
+	}
+	
+	/*
+	 public function getClientsWithProjectsAndRemindersForUser(){
+		$userid = utf8_encode($_REQUEST['userid']);
+	
+		$clientDao = ClientDao::Instance();
+		$clients = $clientDao->getClientsForUserId($userid);
 		$clientsb = $clientDao->getClientsForUserId($userid);
 		
 		$i=0;
@@ -154,6 +215,8 @@ class ClientPaymeWebService {
 		}
 		echo $response->getResponseAsJSON();
 	}
+	 
+	 */
 	
 	
 	/**

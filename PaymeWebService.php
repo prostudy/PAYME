@@ -14,7 +14,7 @@ require_once 'utils/PHPMailer-master/PHPMailerAutoload.php';
 require_once('utils/UtilsFunctions.php');
 
 /*
-getUser http://localhost:8888/PAYME/PaymeWebService.php?methodName=getUser&email=osjobu@gmail.com&password=12345
+getUser http://localhost:8888/PAYME/PaymeWebService.php?methodName=getUser&email=osjobu@gmail.com&password=12345&localstorage=false
 saveUser http://localhost:8888/PAYME/PaymeWebService.php?methodName=saveUser&email=osjobu@gmail.com&name=Oscar&lastname=Busio&password=12345
 verifyUrlActivation http://localhost:8888/PAYME/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=45E3BEE1A5C06426C8BB87F15ECA6788
 requestChangePassword http://localhost:8888/PAYME/PaymeWebService.php?methodName=requestChangePassword&email=osjobu@gmail.com
@@ -43,9 +43,10 @@ class PaymeWebService {
 	public function getUser(){
 		$email = utf8_encode($_REQUEST['email']);
 		$password = utf8_encode($_REQUEST['password']);
+		$localStorage = utf8_encode($_REQUEST['localstorage']);
 
 		$userDao = UserDao::Instance();
-		$user = $userDao->getUser($email,$password);
+		$user = $userDao->getUser($email,$password,$localStorage);
 		$items = array();
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		if(is_array($user) ){

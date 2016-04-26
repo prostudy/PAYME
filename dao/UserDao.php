@@ -28,13 +28,18 @@ final class UserDao
 
 	}
 	
-	public function getUser($email,$password){
+	public function getUser($email,$password,$localStorage){
 		$database = new Database();
 		$row = array();
 		try{
 			$database->query('SELECT * FROM users where email = :email and password = :password and active = 1 limit 1');
 			$database->bind(':email', $email);
-			$database->bind(':password', self::krypPassword($password));			
+			if($localStorage == "true"){
+				$database->bind(':password', $password);
+			}else{
+				$database->bind(':password', self::krypPassword($password));
+			}
+						
 			$row = $database->single(); //$rows = $database->resultset(); //$row = $database->single();
 		}catch(PDOException $e){
 			echo $e->getMessage();

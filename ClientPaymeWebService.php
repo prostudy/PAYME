@@ -115,17 +115,28 @@ class ClientPaymeWebService {
 	
 		$clientDao = ClientDao::Instance();
 		$clients = $clientDao->getClientsForUserId($userid);
+		$clientsb = $clientDao->getClientsForUserId($userid);
 		
 		$i=0;
 		foreach ($clients as $client){
 			$projectsPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],1);
 			$projectsPaidup = self::setRemindersForProjects($projectsPaidup);
 			
-			$projectsNotPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],0);
-			$projectsNotPaidup = self::setRemindersForProjects($projectsNotPaidup);
+			//$projectsNotPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],0);
+			//$projectsNotPaidup = self::setRemindersForProjects($projectsNotPaidup);
 			
 			$clients[$i]['projectsPaidup'] = $projectsPaidup;
-			$clients[$i]['projectsNotPaidup'] = $projectsNotPaidup;
+			//$clients[$i]['b']['projectsNotPaidup'] = $projectsNotPaidup;
+			$i++;
+		}
+		
+		$i=0;
+		foreach ($clientsb as $client){	
+			$projectsNotPaidup = $clientDao->getAllProjectsForClientId($client['idclients'],0);
+			$projectsNotPaidup = self::setRemindersForProjects($projectsNotPaidup);
+				
+			//$clients[$i]['a']['projectsPaidup'] = $projectsPaidup;
+			$clientsb[$i]['projectsNotPaidup'] = $projectsNotPaidup;
 			$i++;
 		}
 		
@@ -133,6 +144,7 @@ class ClientPaymeWebService {
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		if(count($clients) > 0 ){
 			$items['clients'] = $clients;
+			$items['clientsb'] = $clientsb;
 			$response->setItems($items);
 			$response->success = true;
 			$response->message = "Se encontraron clientes.";

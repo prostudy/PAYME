@@ -16,10 +16,11 @@ require_once('utils/UtilsFunctions.php');
 /*
 getClient http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClient&email=osjobu@gmail.com&clientid=4
 getClientsForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsForUser&userid=50
-saveClient http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=saveClient&email=osjobu@gmail.com&name=Oscar&lastname=Busio&company=compania&userid=50
+saveClient //http://localhost/PAYME/ClientPaymeWebService.php?methodName=saveClient&userid=50&email=ogascon@iasanet.com.mx&name=Oscar&lastname=Gascon&company=CASA&description=cargo&cost=739&dateReminder=2016-03-30 11:10:07&sendnow=false&idTemplates=1
 getClientsWithProjectsAndRemindersForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsWithProjectsAndRemindersForUser&userid=50
 getRemindersForPojectId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersForPojectId&projectId=1
 */
+
 
 $controllerObject = new ClientPaymeWebService($_REQUEST['methodName'],
 									   isset($_REQUEST['callback']),
@@ -90,13 +91,21 @@ class ClientPaymeWebService {
 		$lastname = utf8_encode($_REQUEST['lastname']);
 		$company = utf8_encode($_REQUEST['company']);
 		$userid = utf8_encode($_REQUEST['userid']);
+		
+		$description = utf8_encode($_REQUEST['description']);//Tabla de proyectos
+		$cost = utf8_encode($_REQUEST['cost']);
+		
+		$dateReminder = utf8_encode($_REQUEST['dateReminder']);//Tabla de recordatorios
+		$sendnow = utf8_encode($_REQUEST['sendnow']);
+		$idTemplates = utf8_encode($_REQUEST['idTemplates']);
+
 		$createdon = date("Y-m-d H:i:s");
 			
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		$clientDao = ClientDao::Instance();
 			
-		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$createdon);				
-		if($saveClientResult['rowsInserted'] > 0){
+		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$createdon);				
+		if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 			$response->items = $saveClientResult;
 			$response->success = true;
 			$response->message = "Se guardo el cliente correctamente.";

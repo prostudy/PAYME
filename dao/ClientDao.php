@@ -85,11 +85,15 @@ final class ClientDao
 	 * @param date $createdon
 	 * @return multitype:number string NULL
 	 */
-	function saveClient($email,$name,$lastname,$company,$userid,$createdon){
+	
+	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$createdon){
 		$database = new Database();
 		$database->beginTransaction();
 		$saveClientResult = array();
-		$saveClientResult['rowsInserted']  = 0;
+		$saveClientResult['rowsClient']  = 0;
+		$saveClientResult['rowsProject']  = 0;
+		$saveClientResult['rowsReminder']  = 0;
+		
 		$saveClientResult['error'] = '';
 		try{
 			$database->query("INSERT INTO clients (`email`, `name`, `lastname`, `company`, `users_idusers`, `createdon`) VALUES (:email, :name, :lastname, :company, :userid, :createdon)");
@@ -100,8 +104,28 @@ final class ClientDao
 			$database->bind(':userid', $userid );
 			$database->bind(':createdon', $createdon );
 			$database->execute();
-			$saveClientResult['rowsInserted'] = $database->rowCount();
+			
+			$saveClientResult['rowsClient'] = $database->rowCount();
 			$saveClientResult['lastInsertId'] = $database->lastInsertId();
+			
+			
+			$database->query("INSERT INTO projects (`description`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES (:description, :cost, '0', NULL, :createdon, '0', NULL, :clients_idclients)");
+			$database->bind(':description',  $description);
+			$database->bind(':cost',  $cost);
+			$database->bind(':createdon', $createdon );
+			$database->bind(':clients_idclients', $database->lastInsertId() );
+			$database->execute();
+			$database->lastInsertId();
+			$saveClientResult['rowsProject'] = $database->rowCount();
+			
+			$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects, :templates_idtemplates)");
+			$database->bind(':dateReminder',  $dateReminder);
+			$database->bind(':createdon', $createdon );
+			$database->bind(':projects_idprojects', $database->lastInsertId() );
+			$database->bind(':templates_idtemplates',  $idTemplates);
+			$database->execute();
+			$saveClientResult['rowsReminder'] =  $database->rowCount();
+			
 	
 			$database->endTransaction();
 		}catch(PDOException $e){

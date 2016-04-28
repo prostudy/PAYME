@@ -12,12 +12,13 @@ require_once 'utils/PHPMailer-master/PHPMailerAutoload.php';
 require_once('utils/UtilsFunctions.php');
 
 class CronRemainders {
-	public static function readTableReminders(){
+	public static function readTableReminders($idReminderToSendNow){
 		$cronDao = CronRemainderDao::Instance();
-		$remainders = $cronDao->getRemainders();
+		$remainders = $cronDao->getRemainders($idReminderToSendNow);
 
 		foreach ($remainders as $remainder){
-			$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b>";
+			$urlResponseReminderCode = Constants::URL_RESPONSE_REMINDER_CODE.$remainder['response_code'];
+			$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b><br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode;
 			if(UtilsFunctions::sendMail($remainder['email'], $remainder['clientName'], Constants::SUBJECT_EMAIL_REMAINDER, "Hello: ".$remainder['clientName'], $body, Constants::FOOTER_EMAIL_REMAINDER)){
 				$cronDao->updateRemainderAsSend( $remainder['idreminders']);
 				error_log("\nSe ha enviado un correo al email (".$remainder['email'].") reminder con id:".$remainder['idreminders']." ". date("Y-m-d H:i:s"), 3,Constants::FILE_CRON_REMAINDERS_ERRORS);
@@ -28,5 +29,5 @@ class CronRemainders {
 	}
 }
 
-CronRemainders::readTableReminders();
+CronRemainders::readTableReminders(false);
 ?>

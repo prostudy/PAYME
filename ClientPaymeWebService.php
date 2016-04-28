@@ -13,6 +13,10 @@ require_once('utils/CodeGenerator.php');
 require_once 'utils/PHPMailer-master/PHPMailerAutoload.php';
 require_once('utils/UtilsFunctions.php');
 
+require_once 'dao/CronRemainderDao.php';
+require_once './CronRemainders.php';
+
+
 /*
 getClient http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClient&email=osjobu@gmail.com&clientid=4
 getClientsForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsForUser&userid=50
@@ -86,6 +90,8 @@ class ClientPaymeWebService {
 	 * Inserta un cliente en la tabla clients
 	 */
 	public function saveClient(){
+		$createdon = date("Y-m-d H:i:s");
+		
 		$email = utf8_encode($_REQUEST['email']);
 		$name = strtoupper( utf8_encode($_REQUEST['name']) );
 		$lastname = strtoupper( utf8_encode($_REQUEST['lastname']) );
@@ -96,22 +102,26 @@ class ClientPaymeWebService {
 		$cost = utf8_encode($_REQUEST['cost']);
 		
 		$dateReminder = utf8_encode($_REQUEST['dateReminder']);//Tabla de recordatorios
-		$sendnow = utf8_encode($_REQUEST['sendnow']);
+		$sendnow = $_REQUEST['sendnow'];
+		$responseCode = CodeGenerator::activationAccountCodeGenerator($email.$name.$lastname.$userid.$createdon);
 		$idTemplates = utf8_encode($_REQUEST['idTemplates']);
-
-		$createdon = date("Y-m-d H:i:s");
-			
+					
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		$clientDao = ClientDao::Instance();
 			
-		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$createdon);				
+		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$responseCode,$createdon);				
 		if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 			$response->items = $saveClientResult;
 			$response->success = true;
 			$response->message = "Se guardo el cliente correctamente.";
+			
+			$idReminderToSendNow = $saveClientResult['idReminderToSendNow'];
+			if(!strcmp($sendnow,"true")){
+				CronRemainders::readTableReminders($idReminderToSendNow);
+			}
 		}else{
 			$response->success = false;
-			$response->message = $saveUserResult['error'];
+			$response->message = $saveClientResult['error'];
 		}
 		echo $response->getResponseAsJSON();
 	}
@@ -282,6 +292,26 @@ class ClientPaymeWebService {
 		}else{
 			$response->success = false;
 			$response->message = "No se encontraron recordatorios.";
+		}
+		echo $response->getResponseAsJSON();
+	}
+	
+	/**
+	 * Verifica si existe la url de respuesta para un recordatorio dado
+	 */
+	public function webPageResponseReminderCode(){
+		$responseCode = utf8_encode($_REQUEST['responseCode']);
+		$clientDao = ClientDao::Instance();
+		$reminder = $clientDao->verifyResponseReminderCode($responseCode);
+		//$items = array();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		if(is_array($reminder)){
+			$response->setItems($reminder);
+			$response->success = true;
+			$response->message = "El codigo de respuesta se encontro correctamente";
+		}else{
+			$response->success = false;
+			$response->message = "No se encontro codigo de respuesta.";
 		}
 		echo $response->getResponseAsJSON();
 	}

@@ -155,6 +155,5 @@ class PaymeWebService {
 		}
 		echo $response->getResponseAsJSON();
 	}
-	
 }
 ?>

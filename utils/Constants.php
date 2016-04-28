@@ -8,6 +8,7 @@ class Constants{
 	//URLS
 	const DOMAIN = "";
 	const URL_REGISTER_CONFIRMATION_CODE = "http://getsir.mx/payme/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=";
+	const URL_RESPONSE_REMINDER_CODE = "http://getsir.mx/payme/ClientPaymeWebService.php?methodName=webPageResponseReminderCode&responseCode=";//TODO:Proramar esta pagina web
 	const URL_CHANGE_PASSWORD_CODE = "http://getsir.mx/payme/PaymeWebService.php?methodName=ChangePassword&changePasswordCode=";
 	const URL_AVISO_PRIVACIDAD = "";
 	const FILE_CRON_REMAINDERS_ERRORS = "./logs/cronRemindersErrors.log";

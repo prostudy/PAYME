@@ -35,11 +35,11 @@ final class CronRemainderDao
 	 * @param string $email
 	 * @return array client 
 	 */
-	function getRemainders(){
+	function getRemainders($idReminderToSendNow){
 		$database = new Database();
 		$rows = array();
 		try{
-			$database->query("SELECT clients.email
+			$queryString = "SELECT clients.email
 						   ,concat(clients.name,' ',clients.`lastname`) as clientName
 						   ,clients.`company`
 						   ,projects.`description`
@@ -47,6 +47,7 @@ final class CronRemainderDao
 						   ,projects.`logo_image`
 						   ,templates.text
 						   ,reminders.`idreminders`
+						   ,reminders.response_code
 						   ,concat(users.name,' ',users.`lastname`) as userName					
 							FROM reminders, `projects`, clients, templates,users
 							WHERE 1 = 1
@@ -55,9 +56,14 @@ final class CronRemainderDao
 							AND reminders.`projects_idprojects` = projects.`idprojects` 
 							AND clients.`idclients` = projects.`clients_idclients`
 							AND users.idusers = clients.users_idusers					
-							AND templates.`idtemplates` = reminders.`templates_idtemplates`
-							AND (TIMESTAMPDIFF(MINUTE,  now(),date) < 0 ) /*diferencia de minutos de la fecha programada y la actual*/");
-			$database->bind(':minutes', Constants::MINUTES);
+							AND templates.`idtemplates` = reminders.`templates_idtemplates`";
+			
+			if($idReminderToSendNow){
+				$queryString .= " AND reminders.idreminders = $idReminderToSendNow limit 1";
+			}else{
+				$queryString .= " AND (TIMESTAMPDIFF(MINUTE,  now(),date) < 0 ) /*diferencia de minutos de la fecha programada y la actual*/";
+			}
+			$database->query($queryString);
 			$rows = $database->resultset();
 		}catch(PDOException $e){
 			echo $e->getMessage();

@@ -56,7 +56,7 @@ final class CronRemainderDao
 							AND clients.`idclients` = projects.`clients_idclients`
 							AND users.idusers = clients.users_idusers					
 							AND templates.`idtemplates` = reminders.`templates_idtemplates`
-							AND (TIMESTAMPDIFF(MINUTE,  now(),date) > 0 AND TIMESTAMPDIFF(MINUTE,  now(),date) <= :minutes ) /*diferencia de minutos de la fecha programada y la actual*/");
+							AND (TIMESTAMPDIFF(MINUTE,  now(),date) < 0 ) /*diferencia de minutos de la fecha programada y la actual*/");
 			$database->bind(':minutes', Constants::MINUTES);
 			$rows = $database->resultset();
 		}catch(PDOException $e){

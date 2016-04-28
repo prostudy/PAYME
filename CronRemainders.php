@@ -20,7 +20,7 @@ class CronRemainders {
 			$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b>";
 			if(UtilsFunctions::sendMail($remainder['email'], $remainder['clientName'], Constants::SUBJECT_EMAIL_REMAINDER, "Hello: ".$remainder['clientName'], $body, Constants::FOOTER_EMAIL_REMAINDER)){
 				$cronDao->updateRemainderAsSend( $remainder['idreminders']);
-				//error_log("\nSe ha enviado un correo al email (".$remainder['email'].") reminder con id:".$remainder['idreminders']." ". date("Y-m-d H:i:s"), 3,Constants::FILE_CRON_REMAINDERS_ERRORS);
+				error_log("\nSe ha enviado un correo al email (".$remainder['email'].") reminder con id:".$remainder['idreminders']." ". date("Y-m-d H:i:s"), 3,Constants::FILE_CRON_REMAINDERS_ERRORS);
 			}else{
 				error_log("\nNo se pudo enviar recordatorio por email al (".$remainder['email'].") reminder con id:".$remainder['idreminders']." ". date("Y-m-d H:i:s"), 3,Constants::FILE_CRON_REMAINDERS_ERRORS);
 			}

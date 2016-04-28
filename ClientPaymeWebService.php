@@ -87,12 +87,12 @@ class ClientPaymeWebService {
 	 */
 	public function saveClient(){
 		$email = utf8_encode($_REQUEST['email']);
-		$name = utf8_encode($_REQUEST['name']);
-		$lastname = utf8_encode($_REQUEST['lastname']);
-		$company = utf8_encode($_REQUEST['company']);
+		$name = strtoupper( utf8_encode($_REQUEST['name']) );
+		$lastname = strtoupper( utf8_encode($_REQUEST['lastname']) );
+		$company = strtoupper( utf8_encode($_REQUEST['company']) );
 		$userid = utf8_encode($_REQUEST['userid']);
 		
-		$description = utf8_encode($_REQUEST['description']);//Tabla de proyectos
+		$description = strtoupper ( utf8_encode($_REQUEST['description']) );//Tabla de proyectos
 		$cost = utf8_encode($_REQUEST['cost']);
 		
 		$dateReminder = utf8_encode($_REQUEST['dateReminder']);//Tabla de recordatorios

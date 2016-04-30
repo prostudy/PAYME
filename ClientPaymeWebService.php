@@ -23,6 +23,9 @@ getClientsForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodNa
 saveClient //http://localhost/PAYME/ClientPaymeWebService.php?methodName=saveClient&userid=50&email=ogascon@iasanet.com.mx&name=Oscar&lastname=Gascon&company=CASA&description=cargo&cost=739&dateReminder=2016-03-30 11:10:07&sendnow=false&idTemplates=1
 getClientsWithProjectsAndRemindersForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsWithProjectsAndRemindersForUser&userid=50
 getRemindersForPojectId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersForPojectId&projectId=1
+
+getRemindersSentByUserId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersSentByUserId&userid=62
+setReminderAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAsRead&idreminders=36 
 */
 
 
@@ -313,6 +316,49 @@ class ClientPaymeWebService {
 			$response->success = false;
 			$response->message = "No se encontro codigo de respuesta.";
 		}
+		echo $response->getResponseAsJSON();
+	}
+	
+	
+	/**
+	 * Regresa todos los recordatorios que se an enviado.
+	 */
+	public function getRemindersSentByUserId(){
+		$userid = utf8_encode($_REQUEST['userid']);
+		
+		$clientDao = ClientDao::Instance();
+		$remindersSent = $clientDao->getRemindersSentByUserId($userid);
+		$items = array();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		if(is_array($remindersSent) ){
+			//$items['reminders'] = $remindersSent;
+			$response->setItems($remindersSent);
+			$response->success = true;
+			$response->message = "Se encontraron recordatorios sin leer.";
+		}else{
+			$response->success = false;
+			$response->message = "No se encontraron recordatorios sin leer";
+		}
+		echo $response->getResponseAsJSON();
+		
+	}
+	
+	
+	/**
+	 * Actualiza el valor de la bandera isread indicando que ya se leyo la notificación
+	 */
+	public function setReminderAsRead(){
+		$idreminders = utf8_encode($_REQUEST['idreminders']);
+		$clientDao = ClientDao::Instance();
+		
+		$idremindersArray = explode(',', $idreminders);
+		for($index=0; $index< count($idremindersArray); $index++){
+			$clientDao->setReminderAsRead($idremindersArray[$index]);
+		}
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		$response->success = true;
+		$response->message = "Se actualizaron los registros.";
+		
 		echo $response->getResponseAsJSON();
 	}
 }

@@ -52,6 +52,7 @@ final class ClientDao
 		return $row;
 	}
 	
+	
 	/**
 	 * Recupera todos los clientes de un determinado usuario
 	 * @param int $userid
@@ -237,6 +238,68 @@ final class ClientDao
 	
 		return $user;
 	}
+	
+	
+	/**
+	 * Regresa todos los recordatorios que se an enviado.
+	 */
+	function getRemindersSentByUserId($userid){
+		$database = new Database();
+		$rows = array();
+		try{
+			$database->query("SELECT clients.email
+						   ,concat(clients.name,' ',clients.`lastname`) as clientName
+						   ,clients.`company`
+						   ,projects.`description`
+						   ,projects.`cost`
+						   ,projects.`logo_image`
+						   ,templates.text
+						   ,reminders.`idreminders`
+						   ,reminders.response_code
+						   ,concat(users.name,' ',users.`lastname`) as userName					
+							FROM reminders, `projects`, clients, templates,users
+							WHERE 1 = 1
+							AND projects.`paidup` = 0 AND projects.`deleted` = 0 /*solo proyectos sin pagar y sin estar eliminados*/
+							AND reminders.send = 1 AND reminders.deleted = 0  /*solo recordatorios no enviados y que no esten eliminados*/
+							AND reminders.isread = 0
+							AND reminders.`projects_idprojects` = projects.`idprojects` 
+							AND clients.`idclients` = projects.`clients_idclients`
+							AND users.idusers = clients.users_idusers					
+							AND templates.`idtemplates` = reminders.`templates_idtemplates`
+							AND users.idusers = :userId");
+			$database->bind(':userId', $userid);
+			$rows = $database->resultset(); 
+		}catch(PDOException $e){
+			echo $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $rows;
+	}
+	
+	/**
+	 * Actualiza el valor de la bandera isread indicando que ya se leyo la notificación
+	 * @param id $user
+	 */
+	public function setReminderAsRead($idreminder){
+		$database = new Database();
+		$database->beginTransaction();	
+		try{
+			$database->query("UPDATE reminders SET `isread` = '1' WHERE `reminders`.`idreminders` = :idreminders");
+			$database->bind(':idreminders',  $idreminder);
+			$database->execute();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	}
+	
+	
 }
 
 ?>

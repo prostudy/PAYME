@@ -24,8 +24,10 @@ saveClient //http://localhost/PAYME/ClientPaymeWebService.php?methodName=saveCli
 getClientsWithProjectsAndRemindersForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsWithProjectsAndRemindersForUser&userid=50
 getRemindersForPojectId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersForPojectId&projectId=1
 
-getRemindersSentByUserId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersSentByUserId&userid=62
-setReminderAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAsRead&idreminders=36 
+getRemindersSentAndAnsweredByUserId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersSentAndAnsweredByUserId&userid=62
+setReminderAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAsRead&idreminders=36
+setReminderAnweredAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAnweredAsRead&idreminders=36
+
 */
 
 
@@ -321,27 +323,35 @@ class ClientPaymeWebService {
 	
 	
 	/**
-	 * Regresa todos los recordatorios que se an enviado.
+	 * Regresa todos los recordatorios que se han enviado.
 	 */
-	public function getRemindersSentByUserId(){
+	public function getRemindersSentAndAnsweredByUserId(){
 		$userid = utf8_encode($_REQUEST['userid']);
 		
 		$clientDao = ClientDao::Instance();
 		$remindersSent = $clientDao->getRemindersSentByUserId($userid);
+		$remindersAnswered = $clientDao->getRemindersAnsweredByUserId($userid);
+		
 		$items = array();
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
-		if(is_array($remindersSent) ){
-			//$items['reminders'] = $remindersSent;
-			$response->setItems($remindersSent);
+		
+		$response->success = false;
+		$response->message = "No se encontraron recordatorios.";
+		
+		//if(is_array($remindersSent) ){
+			$items['remindersSent'] = $remindersSent;
+			$items['remindersAnswered'] = $remindersAnswered;
+			$response->setItems($items);
 			$response->success = true;
-			$response->message = "Se encontraron recordatorios sin leer.";
-		}else{
+			$response->message = "Se encontraron recordatorios.";
+		/*}else{
 			$response->success = false;
-			$response->message = "No se encontraron recordatorios sin leer";
-		}
+			$response->message = "No se encontraron recordatorios.";
+		}*/
 		echo $response->getResponseAsJSON();
 		
 	}
+
 	
 	
 	/**
@@ -359,6 +369,25 @@ class ClientPaymeWebService {
 		$response->success = true;
 		$response->message = "Se actualizaron los registros.";
 		
+		echo $response->getResponseAsJSON();
+	}
+	
+	/**
+	 * Actualiza el valor de la bandera responseIsRead indicando que ya se leyo la notificación que un usuario contesto
+	 * @param id $user
+	 */
+	public function setReminderAnweredAsRead(){
+		$idreminders = utf8_encode($_REQUEST['idreminders']);
+		$clientDao = ClientDao::Instance();
+	
+		$idremindersArray = explode(',', $idreminders);
+		for($index=0; $index< count($idremindersArray); $index++){
+			$clientDao->setReminderAnweredAsRead($idremindersArray[$index]);
+		}
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		$response->success = true;
+		$response->message = "Se actualizaron los registros.";
+	
 		echo $response->getResponseAsJSON();
 	}
 }

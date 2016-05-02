@@ -362,6 +362,70 @@ final class ClientDao
 	}
 	
 	
+	/**
+	 * Marca un proyecto como pagado o no pagado
+	 * @param int $idproject
+	 * @param int $idclient
+	 * @param int $paid
+	 * @return multitype:number string NULL
+	 */
+	public function setProjectAsPaidup($idproject,$idclient,$paid){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateProjectResult = array();
+		$updateProjectResult['rowsUpdated']  = 0;
+		$updateProjectResult['error'] = '';
+		
+		try{
+			$database->query("UPDATE projects SET `paidup` = :paid WHERE `idprojects` = :idproject and clients_idclients = :idclient" );
+			$database->bind(':idproject',  $idproject);
+			$database->bind(':idclient',  $idclient);
+			$database->bind(':paid',  $paid);
+			
+			$database->execute();
+			$updateProjectResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateProjectResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+		
+		return $updateProjectResult;
+	}
+	
+	
+	public function setProjectAsArchived($idproject,$idclient,$deleted){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateProjectResult = array();
+		$updateProjectResult['rowsUpdated']  = 0;
+		$updateProjectResult['error'] = '';
+	
+		try{
+			$database->query("UPDATE projects SET `deleted` = :deleted WHERE `idprojects` = :idproject and clients_idclients = :idclient" );
+			$database->bind(':idproject',  $idproject);
+			$database->bind(':idclient',  $idclient);
+			$database->bind(':deleted',  $deleted);
+				
+			$database->execute();
+			$updateProjectResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateProjectResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $updateProjectResult;
+	}
+	
+	
+	
 }
 
 ?>

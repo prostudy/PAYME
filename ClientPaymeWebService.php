@@ -27,7 +27,7 @@ getRemindersForPojectId http://localhost:8888/PAYME/ClientPaymeWebService.php?me
 getRemindersSentAndAnsweredByUserId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersSentAndAnsweredByUserId&userid=62
 setReminderAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAsRead&idreminders=36
 setReminderAnweredAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAnweredAsRead&idreminders=36
-
+setProjectAsPaidup http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setProjectAsPaidup&idprojects=36&idprojects=1&idclient=1&paid=1
 */
 
 
@@ -388,6 +388,49 @@ class ClientPaymeWebService {
 		$response->success = true;
 		$response->message = "Se actualizaron los registros.";
 	
+		echo $response->getResponseAsJSON();
+	}
+	
+	
+	/**
+	 * Marca un proyecto como pagado o no pagado
+	 */
+	public function setProjectAsPaidup(){
+		$idproject = utf8_encode($_REQUEST['idprojects']);
+		$idclient = utf8_encode($_REQUEST['idclient']);
+		$paid = utf8_encode($_REQUEST['paid']);
+		
+		$clientDao = ClientDao::Instance();
+		$result = $clientDao->setProjectAsPaidup($idproject,$idclient,$paid);
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+	
+		if($result['rowsUpdated'] > 0){
+			$response->success = true;
+			$response->message = "Se actualizo el proyecto correctamente.";
+		}else{
+			$response->success = false;
+			$response->message = "No se actualizo ningun proyecto.";
+		}
+		echo $response->getResponseAsJSON();
+	}
+	
+	
+	public function setProjectAsArchived(){
+		$idproject = utf8_encode($_REQUEST['idprojects']);
+		$idclient = utf8_encode($_REQUEST['idclient']);
+		$deleted = utf8_encode($_REQUEST['deleted']);
+	
+		$clientDao = ClientDao::Instance();
+		$result = $clientDao->setProjectAsArchived($idproject,$idclient,$deleted);
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+	
+		if($result['rowsUpdated'] > 0){
+			$response->success = true;
+			$response->message = "Se actualizo el proyecto correctamente.";
+		}else{
+			$response->success = false;
+			$response->message = "No se actualizo ningun proyecto.";
+		}
 		echo $response->getResponseAsJSON();
 	}
 }

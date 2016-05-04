@@ -105,16 +105,20 @@ class ClientPaymeWebService {
 		
 		$description = strtoupper ( utf8_encode($_REQUEST['description']) );//Tabla de proyectos
 		$cost = utf8_encode($_REQUEST['cost']);
+		$idproject = $_REQUEST['idprojects'];
 		
-		$dateReminder = utf8_encode($_REQUEST['dateReminder']);//Tabla de recordatorios
+		$dateReminders = utf8_encode($_REQUEST['dateReminders']);//Tabla de recordatorios
+		$remindersArray = explode(',', $dateReminders);
+		
 		$sendnow = $_REQUEST['sendnow'];
-		$responseCode = CodeGenerator::activationAccountCodeGenerator($email.$name.$lastname.$userid.$createdon);
 		$idTemplates = utf8_encode($_REQUEST['idTemplates']);
+		$mode = $_REQUEST['mode'];
+		
 					
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		$clientDao = ClientDao::Instance();
 			
-		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$responseCode,$createdon);				
+		$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$idTemplates,$createdon,$mode);				
 		if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 			$response->items = $saveClientResult;
 			$response->success = true;

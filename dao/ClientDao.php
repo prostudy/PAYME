@@ -87,7 +87,7 @@ final class ClientDao
 	 * @return multitype:number string NULL
 	 */
 	
-	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$dateReminder,$sendnow,$idTemplates,$responseCode,$createdon){
+	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$idTemplates,$createdon,$mode){
 		$database = new Database();
 		$database->beginTransaction();
 		$saveClientResult = array();
@@ -119,15 +119,21 @@ final class ClientDao
 			$database->lastInsertId();
 			$saveClientResult['rowsProject'] = $database->rowCount();
 			
-			$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects, :templates_idtemplates,:response_code)");
-			$database->bind(':dateReminder',  $dateReminder);
-			$database->bind(':createdon', $createdon );
-			$database->bind(':projects_idprojects', $database->lastInsertId() );
-			$database->bind(':templates_idtemplates',  $idTemplates);
-			$database->bind(':response_code',  $responseCode);
+			$idProyecto = $database->lastInsertId();
 			
-			$database->execute();
-			$saveClientResult['rowsReminder'] =  $database->rowCount();
+			for($index=0; $index< count($remindersArray); $index++){
+				$responseCode = CodeGenerator::activationAccountCodeGenerator($index.$email.$name.$lastname.$userid.$createdon);
+				
+				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects, :templates_idtemplates,:response_code)");
+				$database->bind(':dateReminder',  $remindersArray[$index]);
+				$database->bind(':createdon', $createdon );
+				$database->bind(':projects_idprojects', $idProyecto);
+				$database->bind(':templates_idtemplates',  $idTemplates);
+				$database->bind(':response_code',  $responseCode);
+				$database->execute();
+				$saveClientResult['rowsReminder'] +=  $database->rowCount();
+					
+			}
 			$saveClientResult['idReminderToSendNow'] =  $database->lastInsertId();
 			
 	

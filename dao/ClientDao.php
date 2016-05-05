@@ -87,7 +87,7 @@ final class ClientDao
 	 * @return multitype:number string NULL
 	 */
 	
-	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$idTemplates,$createdon,$mode){
+	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode){
 		$database = new Database();
 		$database->beginTransaction();
 		$saveClientResult = array();
@@ -124,11 +124,10 @@ final class ClientDao
 			for($index=0; $index< count($remindersArray); $index++){
 				$responseCode = CodeGenerator::activationAccountCodeGenerator($index.$email.$name.$lastname.$userid.$createdon);
 				
-				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects, :templates_idtemplates,:response_code)");
+				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,:response_code)");
 				$database->bind(':dateReminder',  $remindersArray[$index]);
 				$database->bind(':createdon', $createdon );
 				$database->bind(':projects_idprojects', $idProyecto);
-				$database->bind(':templates_idtemplates',  $idTemplates);
 				$database->bind(':response_code',  $responseCode);
 				$database->execute();
 				$saveClientResult['rowsReminder'] +=  $database->rowCount();

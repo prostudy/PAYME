@@ -432,7 +432,189 @@ final class ClientDao
 	}
 	
 	
+	/**
+	 * Se invoca cuando se desea actualizar los valores de un recordatorio
+	 * @param int $idReminder
+	 * @param date $dayFecha
+	 * @param int $idproject
+	 * @return number numero de registros afectados
+	 */
+	function updateReminder($idReminder,$dayFecha,$idproject){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateReminderResult['rowsUpdated']  = 0;
+		$updateReminderResult['error'] = '';
 	
+		try{
+			$database->query("UPDATE `reminders` SET `date` = :dayFecha WHERE `reminders`.`idreminders` = :idReminder AND `reminders`.`projects_idprojects` = :idproject;" );
+			$database->bind(':dayFecha',  $dayFecha);
+			$database->bind(':idReminder',  $idReminder);
+			$database->bind(':idproject',  $idproject);
+			
+			$database->execute();
+			$updateReminderResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateReminderResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $updateReminderResult;
+	}
+	
+	
+	/**
+	 * Se invoca cuando se desea insertar un nuevo  recordatorio a un proyecto ya existente
+	 * @param date $dayFecha
+	 * @param date $createdon
+	 * @param int $idProyecto
+	 * @param string $email
+	 * @param string $name
+	 * @param string $lastname
+	 * @param int $userid
+	 * @return number
+	 */
+	function insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid){
+		$database = new Database();
+		$database->beginTransaction();
+		$insertReminderResult['rowsInserted']  = 0;
+		$insertReminderResult['error'] = '';
+		
+		try{
+			$responseCode = CodeGenerator::activationAccountCodeGenerator($email.$name.$lastname.$userid.$createdon);
+			
+			$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
+			$database->bind(':dateReminder',  $dayFecha);
+			$database->bind(':createdon', $createdon );
+			$database->bind(':projects_idprojects', $idproject);
+			$database->bind(':response_code',  $responseCode);
+			$database->execute();
+			$insertReminderResult['rowsInserted'] =  $database->rowCount();
+			$insertReminderResult['idReminderToSendNow'] =  $database->lastInsertId();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateReminderResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+		
+		return $insertReminderResult;
+	}
+	
+	
+	/**
+	 * Actualiza los valores de un cliente especifico
+	 * @param int $clientId
+	 * @param string $email
+	 * @param string $name
+	 * @param string $lastname
+	 * @param string $company
+	 * @param int $userid
+	 * @return number
+	 */
+	function updateClient($clientId,$email,$name,$lastname,$company,$userid){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateClienteResult['rowsUpdated']  = 0;
+		$updateClienteResult['error'] = '';
+	
+		try{
+			$database->query("UPDATE `clients` SET `email` = :email, `name` = :name , `lastname` = :lastname , `company` = :company WHERE `clients`.`idclients` = :clientId AND `clients`.`users_idusers` = :userid ;");
+			$database->bind(':email',  $email);
+			$database->bind(':name',  $name);
+			$database->bind(':lastname',  $lastname);
+			$database->bind(':company',  $company);
+			$database->bind(':clientId',  $clientId);
+			$database->bind(':userid',  $userid);
+
+			$database->execute();
+			$updateClienteResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateClienteResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $updateClienteResult;
+	}
+	
+	
+	/**
+	 *  Actualiza los valores de un cliente especifico
+	 * @param int $idproject
+	 * @param string $description
+	 * @param float $cost
+	 * @param int $clientId
+	 * @return number
+	 */
+	function updateProject($idproject,$description,$cost,$clientId){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateProjectResult['rowsUpdated']  = 0;
+		$updateProjectResult['error'] = '';
+		
+		try{
+			$database->query("UPDATE `projects` SET `description` = :description, `cost` = :cost WHERE `projects`.`idprojects` = :idproject AND `projects`.`clients_idclients` = :clientId;");
+			$database->bind(':description', $description );
+			$database->bind(':cost', $cost );
+			$database->bind(':idproject',  $idproject);
+			$database->bind(':clientId', $clientId );
+			
+			$database->execute();
+			$updateProjectResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateProjectResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+		
+		return $updateProjectResult;
+	}
+	
+	
+	
+	/**
+	 * Elimina un recordatorio definitivamente de la base de datos
+	 * @param int $idReminder
+	 * @param int $idproject
+	 * @return number
+	 */
+	function deleteReminder($idReminder,$idproject){
+		$database = new Database();
+		$database->beginTransaction();
+		$deleteReminderResult['rowsUpdated']  = 0;
+		$deleteReminderResult['error'] = '';
+	
+		try{
+			$database->query("DELETE FROM `reminders` WHERE `reminders`.`idreminders` = :idReminder AND `reminders`.`projects_idprojects` = :idproject ;");
+			$database->bind(':idReminder', $idReminder );
+			$database->bind(':idproject', $idproject );
+
+			$database->execute();
+			$deleteReminderResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$deleteReminderResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $deleteReminderResult;
+	}
+		
 }
 
 ?>

@@ -97,7 +97,7 @@ class ClientPaymeWebService {
 	public function saveClient(){
 		$createdon = date("Y-m-d H:i:s");
 		
-		$email = utf8_encode($_REQUEST['email']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
 		$name = strtoupper( utf8_encode($_REQUEST['name']) );
 		$lastname = strtoupper( utf8_encode($_REQUEST['lastname']) );
 		$company = strtoupper( utf8_encode($_REQUEST['company']) );
@@ -106,6 +106,7 @@ class ClientPaymeWebService {
 		$description = strtoupper ( utf8_encode($_REQUEST['description']) );//Tabla de proyectos
 		$cost = utf8_encode($_REQUEST['cost']);
 		$idproject = $_REQUEST['idprojects'];
+		$clientId = $_REQUEST['clientId'];
 		
 		$dateReminders = utf8_encode($_REQUEST['dateReminders']);//Tabla de recordatorios
 		$remindersArray = strlen(trim($dateReminders)) > 0 ? explode(',',$dateReminders ) : [];
@@ -116,14 +117,10 @@ class ClientPaymeWebService {
 		
 		$clientDao = ClientDao::Instance();
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
-			
-		
-		
+
 		
 		if($mode == 1){
 			//Agregar cliente, proyecto, recordatorios
-			$response->success = true;
-			$response->message = "Agregar cliente, proyecto, recordatorios";
 			$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode);
 			if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 				$response->items = $saveClientResult;
@@ -139,35 +136,57 @@ class ClientPaymeWebService {
 				$response->message = $saveClientResult['error'];
 			}
 						
-		}else if( $mode == 2 && !strcmp($sendnow,"true") ){
-			//Actualizar cliente y proyecto
-			//Agregar un nuevo recordatorio siempre y cuando haya disponibles
-			//Reminders vacio o lleno SE IGNORA
-			
-			//$idproject
-			$response->success = true;
-			$response->message = "Agregar un nuevo recordatorio siempre y cuando haya disponibles";
-			
 		}else if( $mode == 2 && count($remindersArray) == 0 ){
 			/*
 				Reminders vacio,
 				ProjectId,
 				Actualizar los valores de cliente y proyecto.
 			 * */
+			//Actualiza los datos de un cliente
+			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$company,$userid);
+				
+			//Actualiza los datos de un proyecto
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
 			
 			//$idproject
 			$response->success = true;
 			$response->message = "Actualizar los valores de cliente y proyecto.";
 			
 		}else if($mode == 2 && count($remindersArray) > 0 ){
-			//Actualizar los valores de cliente y Proyecto.
-			//Actualizar o crear recordatorios.
-				//echo ($remindersArray);
-			//$idproject
+			//Actualizar los valores de cliente y Proyecto y Actualizar o crear recordatorios.
+			
+			//Actualiza los datos de un cliente
+			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$company,$userid);
+			
+			//Actualiza los datos de un proyecto
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
+			
+			//Actualiza o inserta recordatorios nuevos a un proyecto especifico
+			for($index=0; $index < count($remindersArray); $index++){
+				$day =  explode('|',$remindersArray[$index] );
+				$action = $day[0];
+				$idReminder = $day[1];
+				$dayFecha = $day[2];
+				
+				if(!strcmp($action,"update")){
+					$saveClientResult = $clientDao->updateReminder($idReminder,$dayFecha,$idproject);
+					
+				}else if(!strcmp($action,"create")){
+					$saveClientResult = $clientDao->insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid);
+					
+				}else if(!strcmp($action,"delete")){
+					$saveClientResult = $clientDao->deleteReminder($idReminder,$idproject);		
+									
+				}else if(!strcmp($action,"createAndSendNow") && !strcmp($sendnow,"true")){
+					$saveClientResult = $clientDao->insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid);
+					$idReminderToSendNow = $saveClientResult['idReminderToSendNow'];
+					CronRemainders::readTableReminders($idReminderToSendNow);
+				}
+			}
+			
 			$response->success = true;
 			$response->message = "Actualizar los valores de cliente y Proyecto--Actualizar o crear recordatorios";
 		}
-		
 		
 		echo $response->getResponseAsJSON();
 		

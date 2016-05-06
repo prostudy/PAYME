@@ -119,12 +119,14 @@ final class ClientDao
 			$database->lastInsertId();
 			$saveClientResult['rowsProject'] = $database->rowCount();
 			
+			
+			
 			$idProyecto = $database->lastInsertId();
 			
 			for($index=0; $index< count($remindersArray); $index++){
 				$responseCode = CodeGenerator::activationAccountCodeGenerator($index.$email.$name.$lastname.$userid.$createdon);
 				
-				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,:response_code)");
+				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
 				$database->bind(':dateReminder',  $remindersArray[$index]);
 				$database->bind(':createdon', $createdon );
 				$database->bind(':projects_idprojects', $idProyecto);

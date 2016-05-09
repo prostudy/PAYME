@@ -189,6 +189,57 @@ final class UserDao
 		
 		return $updateUserResult;
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @param int $iduser
+	 * @param string $email
+	 * @param string $name
+	 * @param string $password
+	 * @param string $lastname
+	 * @param string $textAccount
+	 * @return multitype:number string NULL
+	 */
+	public function updateUserInfo($iduser,$email,$name,$password,$lastname,$textAccount){
+		$database = new Database();
+		$database->beginTransaction();
+		$updateUserResult = array();
+		$updateUserResult['rowsUpdated']  = 0;
+		$updateUserResult['error'] = '';
+	
+		try{
+			if(strlen ( $password ) > 0){//Solo si viene el password se actualiza
+				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `password` = :password, `text_account` = :textAccount WHERE `users`.`idusers` = :iduser;");
+				$database->bind(':email', $email );
+				$database->bind(':name', $name );
+				$database->bind(':lastname', $lastname );
+				$database->bind(':password', self::krypPassword($password));
+				$database->bind(':textAccount', $textAccount );
+				$database->bind(':iduser', $iduser );
+			}else{
+				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `text_account` = :textAccount WHERE `users`.`idusers` = :iduser;");
+				$database->bind(':email', $email );
+				$database->bind(':name', $name );
+				$database->bind(':lastname', $lastname );
+				$database->bind(':textAccount', $textAccount );
+				$database->bind(':iduser', $iduser );
+			}
+			
+			$database->execute();
+			$updateUserResult['rowsUpdated'] = $database->rowCount();
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updateUserResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $updateUserResult;
+	}
 }
 
 ?>

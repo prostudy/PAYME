@@ -19,6 +19,8 @@ saveUser http://localhost:8888/PAYME/PaymeWebService.php?methodName=saveUser&ema
 verifyUrlActivation http://localhost:8888/PAYME/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=45E3BEE1A5C06426C8BB87F15ECA6788
 requestChangePassword http://localhost:8888/PAYME/PaymeWebService.php?methodName=requestChangePassword&email=osjobu@gmail.com
 
+updateUserInfo http://localhost:8888/PAYME/PaymeWebService.php?methodName=updateUserInfo&iduser=62&email=osjobu3@gmail.com&name=Mario&lastname=gonzales&password=123456&textAccount=mi texto de cuenta
+		
 */
 
 $controllerObject = new PaymeWebService($_REQUEST['methodName'],
@@ -41,7 +43,7 @@ class PaymeWebService {
 	 *  @param string  password
 	 */
 	public function getUser(){
-		$email = utf8_encode($_REQUEST['email']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
 		$password = utf8_encode($_REQUEST['password']);
 		$localStorage = utf8_encode($_REQUEST['localstorage']);
 
@@ -71,9 +73,9 @@ class PaymeWebService {
 	 *  @param string  password
 	 */
 	public function saveUser(){
-		$email = utf8_encode($_REQUEST['email']);
-		$name = utf8_encode($_REQUEST['name']);
-		$lastname = utf8_encode($_REQUEST['lastname']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
+		$name = strtoupper(utf8_encode($_REQUEST['name']));
+		$lastname = strtoupper(utf8_encode($_REQUEST['lastname']));
 		$password = utf8_encode($_REQUEST['password']);
 		$createdon = date("Y-m-d H:i:s");
 		$activation_code = CodeGenerator::activationAccountCodeGenerator($email.$name.$lastname.$createdon);
@@ -133,7 +135,7 @@ class PaymeWebService {
 	 * @param email
 	 */
 	public function requestChangePassword(){
-		$email = utf8_encode($_REQUEST['email']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
 		$resetPasswordCode = CodeGenerator::activationAccountCodeGenerator($email.date("Y-m-d H:i:s"));
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		
@@ -155,5 +157,41 @@ class PaymeWebService {
 		}
 		echo $response->getResponseAsJSON();
 	}
+	
+	
+	/**
+	 * Actualiza la informacion del usuario
+	 */
+	public function updateUserInfo(){
+		$iduser = ($_REQUEST['iduser']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
+		$name = strtoupper(utf8_encode($_REQUEST['name']));
+		$lastname = strtoupper(utf8_encode($_REQUEST['lastname']));
+		$password = trim(utf8_encode($_REQUEST['password']));
+		$textAccount = strtoupper(utf8_encode($_REQUEST['textAccount']));
+		
+		$userDao = UserDao::Instance();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		if(UtilsFunctions::validEMail($email) && UtilsFunctions::validUserDataForUpdate($name, $lastname)){
+			$result = $userDao->updateUserInfo($iduser, $email, $name, $password, $lastname, $textAccount);
+			
+			if($result['rowsUpdated'] > 0){
+				$response->success = true;
+				$response->message = "Se actualizo el usuario correctamente.";
+			}else{
+				$response->success = false;
+				$response->message = $result['error'];
+			}
+		}else{
+			$response->success = false;
+			$response->message = "Los datos del usuario no son correctos.";
+		}
+		
+		
+		echo $response->getResponseAsJSON();
+
+
+	}
+	
 }
 ?>

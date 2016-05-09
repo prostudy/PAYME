@@ -48,7 +48,8 @@ final class CronRemainderDao
 						   ,templates.text
 						   ,reminders.`idreminders`
 						   ,reminders.response_code
-						   ,concat(users.name,' ',users.`lastname`) as userName					
+						   ,concat(users.name,' ',users.`lastname`) as userName,
+							users.text_account
 							FROM reminders, `projects`, clients, templates,users
 							WHERE 1 = 1
 							AND projects.`paidup` = 0 AND projects.`deleted` = 0 /*solo proyectos sin pagar y sin estar eliminados*/

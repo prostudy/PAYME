@@ -49,7 +49,7 @@ class ClientPaymeWebService {
 	 * Recupera un cliente por medio del email y el clientid
 	 */
 	public function getClient(){
-		$email = utf8_encode($_REQUEST['email']);
+		$email = strtolower(utf8_encode($_REQUEST['email']));
 		$clientid = utf8_encode($_REQUEST['clientid']);
 		/*$name = utf8_encode($_REQUEST['name']);*/
 	

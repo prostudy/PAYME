@@ -15,6 +15,10 @@ class UtilsFunctions{
 		return    strlen(trim($name)) > 0 ? strlen(trim($lastname)) > 0 ? strlen(trim($password)) > 0 ? true : false : false : false ;
 	}
 	
+	public static function validUserDataForUpdate($name,$lastname) {
+		return    strlen(trim($name)) > 0 ? strlen(trim($lastname)) > 0 ?  true : false : false ;
+	}
+	
 	
 	
 	public static function sendMail($to,$name,$subject,$headMessage,$urlActivacion,$footerMessage){

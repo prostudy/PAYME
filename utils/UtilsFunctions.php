@@ -21,7 +21,7 @@ class UtilsFunctions{
 	
 	
 	
-	public static function sendMail($to,$name,$subject,$headMessage,$urlActivacion,$footerMessage){
+	public static function sendMail($to,$Bcc,$name,$subject,$headMessage,$urlActivacion,$footerMessage){
 		try{
 			
 			$mail = new PHPMailer;
@@ -36,6 +36,9 @@ class UtilsFunctions{
 	
 			$mail->setFrom(Constants::ADMIN_EMAILS_FROM, Constants::SET_FROM_NAME);
 			$mail->addAddress($to, $name);     // Add a recipient
+			if($Bcc){
+				$mail->addBCC($Bcc);
+			}
 			$mail->FromName = utf8_decode( Constants::SET_FROM_NAME);
 			$mail->isHTML(true);                                  // Set email format to HTML
 	

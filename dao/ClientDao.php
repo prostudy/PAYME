@@ -87,7 +87,7 @@ final class ClientDao
 	 * @return multitype:number string NULL
 	 */
 	
-	function saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode){
+	function saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode){
 		$database = new Database();
 		$database->beginTransaction();
 		$saveClientResult = array();
@@ -97,10 +97,11 @@ final class ClientDao
 		
 		$saveClientResult['error'] = '';
 		try{
-			$database->query("INSERT INTO clients (`email`, `name`, `lastname`, `company`, `users_idusers`, `createdon`) VALUES (:email, :name, :lastname, :company, :userid, :createdon)");
+			$database->query("INSERT INTO clients (`email`, `name`, `lastname`, `phone`, `company`, `users_idusers`, `createdon`) VALUES (:email, :name, :lastname, :phone, :company, :userid, :createdon)");
 			$database->bind(':email',  $email);
 			$database->bind(':name', $name);
 			$database->bind(':lastname', $lastname);
+			$database->bind(':phone', $phone);
 			$database->bind(':company', $company);
 			$database->bind(':userid', $userid );
 			$database->bind(':createdon', $createdon );
@@ -517,17 +518,18 @@ final class ClientDao
 	 * @param int $userid
 	 * @return number
 	 */
-	function updateClient($clientId,$email,$name,$lastname,$company,$userid){
+	function updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateClienteResult['rowsUpdated']  = 0;
 		$updateClienteResult['error'] = '';
 	
 		try{
-			$database->query("UPDATE `clients` SET `email` = :email, `name` = :name , `lastname` = :lastname , `company` = :company WHERE `clients`.`idclients` = :clientId AND `clients`.`users_idusers` = :userid ;");
+			$database->query("UPDATE `clients` SET `email` = :email, `name` = :name , `lastname` = :lastname , `phone` = :phone , `company` = :company WHERE `clients`.`idclients` = :clientId AND `clients`.`users_idusers` = :userid ;");
 			$database->bind(':email',  $email);
 			$database->bind(':name',  $name);
 			$database->bind(':lastname',  $lastname);
+			$database->bind(':phone',  $phone);
 			$database->bind(':company',  $company);
 			$database->bind(':clientId',  $clientId);
 			$database->bind(':userid',  $userid);

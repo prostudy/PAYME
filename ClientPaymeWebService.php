@@ -100,6 +100,7 @@ class ClientPaymeWebService {
 		$email = strtolower(utf8_encode($_REQUEST['email']));
 		$name = strtoupper( utf8_encode($_REQUEST['name']) );
 		$lastname = strtoupper( utf8_encode($_REQUEST['lastname']) );
+		$phone = strtoupper( utf8_encode($_REQUEST['phone']) );
 		$company = strtoupper( utf8_encode($_REQUEST['company']) );
 		$userid = utf8_encode($_REQUEST['userid']);
 		
@@ -121,7 +122,7 @@ class ClientPaymeWebService {
 		
 		if($mode == 1){
 			//Agregar cliente, proyecto, recordatorios
-			$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode);
+			$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode);
 			if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 				$response->items = $saveClientResult;
 				$response->success = true;
@@ -143,7 +144,7 @@ class ClientPaymeWebService {
 				Actualizar los valores de cliente y proyecto.
 			 * */
 			//Actualiza los datos de un cliente
-			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$company,$userid);
+			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 				
 			//Actualiza los datos de un proyecto
 			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
@@ -156,7 +157,7 @@ class ClientPaymeWebService {
 			//Actualizar los valores de cliente y Proyecto y Actualizar o crear recordatorios.
 			
 			//Actualiza los datos de un cliente
-			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$company,$userid);
+			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 			
 			//Actualiza los datos de un proyecto
 			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);

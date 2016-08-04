@@ -87,7 +87,7 @@ final class ClientDao
 	 * @return multitype:number string NULL
 	 */
 	
-	function saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode){
+	function saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$customtext,$cost,$remindersArray,$sendnow,$createdon,$mode){
 		$database = new Database();
 		$database->beginTransaction();
 		$saveClientResult = array();
@@ -111,8 +111,9 @@ final class ClientDao
 			$saveClientResult['lastInsertId'] = $database->lastInsertId();
 			
 			
-			$database->query("INSERT INTO projects (`description`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES (:description, :cost, '0', NULL, :createdon, '0', NULL, :clients_idclients)");
+			$database->query("INSERT INTO projects (`description`,`customtext`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES (:description, :customtext, :cost, '0', NULL, :createdon, '0', NULL, :clients_idclients)");
 			$database->bind(':description',  $description);
+			$database->bind(':customtext',  $customtext);
 			$database->bind(':cost',  $cost);
 			$database->bind(':createdon', $createdon );
 			$database->bind(':clients_idclients', $database->lastInsertId() );
@@ -557,15 +558,16 @@ final class ClientDao
 	 * @param int $clientId
 	 * @return number
 	 */
-	function updateProject($idproject,$description,$cost,$clientId){
+	function updateProject($idproject,$description,$customtext,$cost,$clientId){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateProjectResult['rowsUpdated']  = 0;
 		$updateProjectResult['error'] = '';
 		
 		try{
-			$database->query("UPDATE `projects` SET `description` = :description, `cost` = :cost WHERE `projects`.`idprojects` = :idproject AND `projects`.`clients_idclients` = :clientId;");
+			$database->query("UPDATE `projects` SET `description` = :description, `customtext` = :customtext, `cost` = :cost WHERE `projects`.`idprojects` = :idproject AND `projects`.`clients_idclients` = :clientId;");
 			$database->bind(':description', $description );
+			$database->bind(':customtext', $customtext );
 			$database->bind(':cost', $cost );
 			$database->bind(':idproject',  $idproject);
 			$database->bind(':clientId', $clientId );

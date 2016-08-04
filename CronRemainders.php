@@ -18,7 +18,14 @@ class CronRemainders {
 
 		foreach ($remainders as $remainder){
 			$urlResponseReminderCode = Constants::URL_RESPONSE_REMINDER_CODE.$remainder['response_code'];
-			$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b><br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos bancarios:<br/>".$remainder['text_account'];
+			$body = '';
+			if( strlen( trim($remainder['customtext'] ) ) > 0  ) {
+				$body = $remainder['customtext'];
+				$body .= "<br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos bancarios:<br/>".$remainder['text_account'];
+			}else{
+				$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b><br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos bancarios:<br/>".$remainder['text_account'];
+			}
+			
 			if(UtilsFunctions::sendMail($remainder['email'],$remainder['emailuser'], $remainder['clientName'], Constants::SUBJECT_EMAIL_REMAINDER, "Hello: ".$remainder['clientName'], $body, Constants::FOOTER_EMAIL_REMAINDER)){
 				$cronDao->updateRemainderAsSend( $remainder['idreminders']);
 				error_log("\nSe ha enviado un correo al email (".$remainder['email'].") reminder con id:".$remainder['idreminders']." ". date("Y-m-d H:i:s"), 3,Constants::FILE_CRON_REMAINDERS_ERRORS);

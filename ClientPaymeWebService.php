@@ -105,6 +105,7 @@ class ClientPaymeWebService {
 		$userid = utf8_encode($_REQUEST['userid']);
 		
 		$description = strtoupper ( utf8_encode($_REQUEST['description']) );//Tabla de proyectos
+		$customtext = utf8_encode($_REQUEST['customtext']);
 		$cost = utf8_encode($_REQUEST['cost']);
 		$idproject = $_REQUEST['idprojects'];
 		$clientId = $_REQUEST['clientId'];
@@ -122,7 +123,7 @@ class ClientPaymeWebService {
 		
 		if($mode == 1){
 			//Agregar cliente, proyecto, recordatorios
-			$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$cost,$remindersArray,$sendnow,$createdon,$mode);
+			$saveClientResult = $clientDao->saveClient($email,$name,$lastname,$phone,$company,$userid,$description,$customtext,$cost,$remindersArray,$sendnow,$createdon,$mode);
 			if($saveClientResult['rowsClient'] > 0 && $saveClientResult['rowsProject'] > 0 && $saveClientResult['rowsReminder'] > 0){
 				$response->items = $saveClientResult;
 				$response->success = true;
@@ -147,7 +148,7 @@ class ClientPaymeWebService {
 			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 				
 			//Actualiza los datos de un proyecto
-			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$customtext,$cost,$clientId);
 			
 			//$idproject
 			$response->success = true;
@@ -160,7 +161,7 @@ class ClientPaymeWebService {
 			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 			
 			//Actualiza los datos de un proyecto
-			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$customtext,$cost,$clientId);
 			
 			//Actualiza o inserta recordatorios nuevos a un proyecto especifico
 			for($index=0; $index < count($remindersArray); $index++){

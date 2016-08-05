@@ -111,9 +111,8 @@ final class ClientDao
 			$saveClientResult['lastInsertId'] = $database->lastInsertId();
 			
 			
-			$database->query("INSERT INTO projects (`description`,`customtext`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES (:description, :customtext, :cost, '0', NULL, :createdon, '0', NULL, :clients_idclients)");
+			$database->query("INSERT INTO projects (`description`, `cost`, `paidup`, `logo_image`, `createdon`, `deleted`, `deleteon`, `clients_idclients`) VALUES (:description, :cost, '0', NULL, :createdon, '0', NULL, :clients_idclients)");
 			$database->bind(':description',  $description);
-			$database->bind(':customtext',  $customtext);
 			$database->bind(':cost',  $cost);
 			$database->bind(':createdon', $createdon );
 			$database->bind(':clients_idclients', $database->lastInsertId() );
@@ -128,11 +127,12 @@ final class ClientDao
 			for($index=0; $index< count($remindersArray); $index++){
 				$responseCode = CodeGenerator::activationAccountCodeGenerator($index.$email.$name.$lastname.$userid.$createdon);
 				
-				$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
+				$database->query("INSERT INTO reminders (`date`, `send`,`customtext`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :customtext , :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
 				$database->bind(':dateReminder',  $remindersArray[$index]);
 				$database->bind(':createdon', $createdon );
 				$database->bind(':projects_idprojects', $idProyecto);
 				$database->bind(':response_code',  $responseCode);
+				$database->bind(':customtext',  $customtext);
 				$database->execute();
 				$saveClientResult['rowsReminder'] +=  $database->rowCount();
 					
@@ -441,15 +441,16 @@ final class ClientDao
 	 * @param int $idproject
 	 * @return number numero de registros afectados
 	 */
-	function updateReminder($idReminder,$dayFecha,$idproject){
+	function updateReminder($idReminder,$dayFecha,$customtext,$idproject){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateReminderResult['rowsUpdated']  = 0;
 		$updateReminderResult['error'] = '';
 	
 		try{
-			$database->query("UPDATE `reminders` SET `date` = :dayFecha WHERE `reminders`.`idreminders` = :idReminder AND `reminders`.`projects_idprojects` = :idproject;" );
+			$database->query("UPDATE `reminders` SET `date` = :dayFecha, `customtext` = :customtext WHERE `reminders`.`idreminders` = :idReminder AND `reminders`.`projects_idprojects` = :idproject AND `reminders`.`send` = 0;" );
 			$database->bind(':dayFecha',  $dayFecha);
+			$database->bind(':customtext',  $customtext);
 			$database->bind(':idReminder',  $idReminder);
 			$database->bind(':idproject',  $idproject);
 			
@@ -479,7 +480,7 @@ final class ClientDao
 	 * @param int $userid
 	 * @return number
 	 */
-	function insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid){
+	function insertReminder($dayFecha,$customtext,$createdon,$idproject,$email,$name,$lastname,$userid){
 		$database = new Database();
 		$database->beginTransaction();
 		$insertReminderResult['rowsInserted']  = 0;
@@ -488,8 +489,9 @@ final class ClientDao
 		try{
 			$responseCode = CodeGenerator::activationAccountCodeGenerator($email.$name.$lastname.$userid.$createdon);
 			
-			$database->query("INSERT INTO reminders (`date`, `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
+			$database->query("INSERT INTO reminders (`date`, `customtext` , `send`, `createdon`, `deleted`, `deleteon`, `isread`, `responseByClient`, `projects_idprojects`, `templates_idtemplates`,response_code) VALUES ( :dateReminder,:customtext, '0', :createdon, '0', NULL, '0', NULL, :projects_idprojects,1,:response_code)");
 			$database->bind(':dateReminder',  $dayFecha);
+			$database->bind(':customtext',  $customtext);
 			$database->bind(':createdon', $createdon );
 			$database->bind(':projects_idprojects', $idproject);
 			$database->bind(':response_code',  $responseCode);
@@ -558,16 +560,15 @@ final class ClientDao
 	 * @param int $clientId
 	 * @return number
 	 */
-	function updateProject($idproject,$description,$customtext,$cost,$clientId){
+	function updateProject($idproject,$description,$cost,$clientId){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateProjectResult['rowsUpdated']  = 0;
 		$updateProjectResult['error'] = '';
 		
 		try{
-			$database->query("UPDATE `projects` SET `description` = :description, `customtext` = :customtext, `cost` = :cost WHERE `projects`.`idprojects` = :idproject AND `projects`.`clients_idclients` = :clientId;");
+			$database->query("UPDATE `projects` SET `description` = :description, `cost` = :cost WHERE `projects`.`idprojects` = :idproject AND `projects`.`clients_idclients` = :clientId;");
 			$database->bind(':description', $description );
-			$database->bind(':customtext', $customtext );
 			$database->bind(':cost', $cost );
 			$database->bind(':idproject',  $idproject);
 			$database->bind(':clientId', $clientId );

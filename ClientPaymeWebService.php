@@ -148,7 +148,7 @@ class ClientPaymeWebService {
 			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 				
 			//Actualiza los datos de un proyecto
-			$saveClientResult = $clientDao->updateProject($idproject,$description,$customtext,$cost,$clientId);
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
 			
 			//$idproject
 			$response->success = true;
@@ -161,7 +161,7 @@ class ClientPaymeWebService {
 			$saveClientResult = $clientDao->updateClient($clientId,$email,$name,$lastname,$phone,$company,$userid);
 			
 			//Actualiza los datos de un proyecto
-			$saveClientResult = $clientDao->updateProject($idproject,$description,$customtext,$cost,$clientId);
+			$saveClientResult = $clientDao->updateProject($idproject,$description,$cost,$clientId);
 			
 			//Actualiza o inserta recordatorios nuevos a un proyecto especifico
 			for($index=0; $index < count($remindersArray); $index++){
@@ -169,18 +169,19 @@ class ClientPaymeWebService {
 				$action = $day[0];
 				$idReminder = $day[1];
 				$dayFecha = $day[2];
+				$customtext = $day[3];
 				
 				if(!strcmp($action,"update")){
-					$saveClientResult = $clientDao->updateReminder($idReminder,$dayFecha,$idproject);
+					$saveClientResult = $clientDao->updateReminder($idReminder,$dayFecha,$customtext,$idproject);
 					
 				}else if(!strcmp($action,"create")){
-					$saveClientResult = $clientDao->insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid);
+					$saveClientResult = $clientDao->insertReminder($dayFecha,$customtext,$createdon,$idproject,$email,$name,$lastname,$userid);
 					
 				}else if(!strcmp($action,"delete")){
 					$saveClientResult = $clientDao->deleteReminder($idReminder,$idproject);		
 									
 				}else if(!strcmp($action,"createAndSendNow") && !strcmp($sendnow,"true")){
-					$saveClientResult = $clientDao->insertReminder($dayFecha,$createdon,$idproject,$email,$name,$lastname,$userid);
+					$saveClientResult = $clientDao->insertReminder($dayFecha,$customtext,$createdon,$idproject,$email,$name,$lastname,$userid);
 					$idReminderToSendNow = $saveClientResult['idReminderToSendNow'];
 					CronRemainders::readTableReminders($idReminderToSendNow);
 				}

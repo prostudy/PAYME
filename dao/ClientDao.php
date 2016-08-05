@@ -263,8 +263,7 @@ final class ClientDao
 						   ,projects.`cost`
 						   ,projects.`logo_image`
 						   ,templates.text
-						   ,reminders.`idreminders`
-						   ,reminders.response_code
+						   ,reminders.*
 						   ,concat(users.name,' ',users.`lastname`) as userName					
 							FROM reminders, `projects`, clients, templates,users
 							WHERE 1 = 1

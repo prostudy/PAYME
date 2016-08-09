@@ -169,11 +169,15 @@ class PaymeWebService {
 		$lastname = strtoupper(utf8_encode($_REQUEST['lastname']));
 		$password = trim(utf8_encode($_REQUEST['password']));
 		$textAccount = strtoupper(utf8_encode($_REQUEST['textAccount']));
+		$clabe = utf8_encode($_REQUEST['clabe']);
+		$card = utf8_encode($_REQUEST['card']);
+		$paypal = utf8_encode($_REQUEST['paypal']);
+		$phone = utf8_encode($_REQUEST['phone']);
 		
 		$userDao = UserDao::Instance();
 		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
 		if(UtilsFunctions::validEMail($email) && UtilsFunctions::validUserDataForUpdate($name, $lastname)){
-			$result = $userDao->updateUserInfo($iduser, $email, $name, $password, $lastname, $textAccount);
+			$result = $userDao->updateUserInfo($iduser, $email, $name, $password, $lastname, $textAccount,$clabe,$card,$paypal,$phone);
 			
 			if($result['rowsUpdated'] > 0){
 				$response->success = true;

@@ -202,7 +202,7 @@ final class UserDao
 	 * @param string $textAccount
 	 * @return multitype:number string NULL
 	 */
-	public function updateUserInfo($iduser,$email,$name,$password,$lastname,$textAccount){
+	public function updateUserInfo($iduser,$email,$name,$password,$lastname,$textAccount,$clabe,$card,$paypal,$phone){
 		$database = new Database();
 		$database->beginTransaction();
 		$updateUserResult = array();
@@ -211,19 +211,27 @@ final class UserDao
 	
 		try{
 			if(strlen ( $password ) > 0){//Solo si viene el password se actualiza
-				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `password` = :password, `text_account` = :textAccount WHERE `users`.`idusers` = :iduser;");
+				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `password` = :password, `text_account` = :textAccount,  `clabe` = :clabe, `card` = :card,  `paypal` = :paypal, `phone` = :phone WHERE `users`.`idusers` = :iduser;");
 				$database->bind(':email', $email );
 				$database->bind(':name', $name );
 				$database->bind(':lastname', $lastname );
 				$database->bind(':password', self::krypPassword($password));
 				$database->bind(':textAccount', $textAccount );
+				$database->bind(':clabe', $clabe );
+				$database->bind(':card', $card );
+				$database->bind(':paypal', $paypal );
+				$database->bind(':phone', $phone );
 				$database->bind(':iduser', $iduser );
 			}else{
-				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `text_account` = :textAccount WHERE `users`.`idusers` = :iduser;");
+				$database->query("UPDATE `users` SET `email` = :email , `name` = :name, `lastname` = :lastname, `text_account` = :textAccount, `clabe` = :clabe,  `card` = :card, `paypal` = :paypal,  `phone` = :phone  WHERE `users`.`idusers` = :iduser;");
 				$database->bind(':email', $email );
 				$database->bind(':name', $name );
 				$database->bind(':lastname', $lastname );
 				$database->bind(':textAccount', $textAccount );
+				$database->bind(':clabe', $clabe );
+				$database->bind(':card', $card );
+				$database->bind(':paypal', $paypal );
+				$database->bind(':phone', $phone );
 				$database->bind(':iduser', $iduser );
 			}
 			

@@ -88,7 +88,7 @@ class PaymeWebService {
 			
 			if($saveUserResult['rowsInserted'] > 0){
 				$urlActivation = Constants::URL_REGISTER_CONFIRMATION_CODE.$activation_code;
-				UtilsFunctions::sendMail($email,null,$name." ".$lastname, "Activación cuenta", "headMessage", $urlActivation, "footerMessage");
+				UtilsFunctions::sendMail($email,null,$name." ".$lastname, Constants::SUBJECT_ACTIVATION.$name." ".$lastname, "Tu cuenta en Payme casi esta lista para usarse. <br>Tenemos que confirmarla, has click en el siguiente enlace:", $urlActivation, "");
 				$response->success = true;
 				$response->message = "Se guardo el usuario correctamente.";
 			}else{
@@ -144,7 +144,7 @@ class PaymeWebService {
 			$result = $userDao->updateResetPasswordCodeforValidUserActive($email,$resetPasswordCode);
 			if($result['rowsUpdated'] > 0){
 				$urlResetPassword = Constants::URL_CHANGE_PASSWORD_CODE.$resetPasswordCode;
-				UtilsFunctions::sendMail($email,null,"", "Cambio de Password", "Para cambiar tu contraseña utiliza a la siguiente url", $urlResetPassword, "Si no solicitaste cambio de contraseña, omite este mensaje");
+				UtilsFunctions::sendMail($email,null,"", "Cambio de Password", "Recientemente solicitaste el cambio de cotnraseña <br>Ingresa al siguiente enlace para cambiarla:", $urlResetPassword, "Si no solicitaste cambio de contraseña, omite este mensaje");
 				$response->success = true;
 				$response->message = "Se solicito el cambio de password.";
 			}else{

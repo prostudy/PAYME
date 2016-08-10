@@ -44,71 +44,76 @@ class UtilsFunctions{
 	
 			//$mail->AltBody = 'Favor de activa tu cuenta con el siguiente enlace ';
 			$mail->Subject = utf8_decode($subject);
-			$mail->Body    = "<!doctype html>
-			     <html>
-			      <head>
-			         <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-			      </head>
-			      <body>
-			        <div id='section1'>
-			          <div style='font-family:verdana;font-size:12px;color:#555555;line-height:14pt'>
-			              <div style='width:590px'>
-			                <div style='background:url(http://dps.grupoiasa.com/iasaEntitlement/utils/img/topMail.png) no-repeat;width:100%;min-height:75px;display:block'>
-			                  <div style='background-repeat-y:no-repeat;background-size:contain;margin: 0px 14px 0px 16px;background-size:contain;overflow:hidden;background-image:url(http://pmstudykit.com/kitsgdp/images/pleca.png);min-height:75px;'>
-			                  <a href='https://www.facebook.com/maestrosdelmedia/?fref=nf' target='_blank'>
-			                    <img src='https://scontent-dfw1-1.xx.fbcdn.net/hprofile-xpf1/v/t1.0-1/p160x160/1914912_506480059531666_6066849200975198148_n.png?_nc_eui=ARill5Cymg2sVEH8siD_hTY3IcFwsQ8Bcbrsi-oMDTOQ-K_iuld5og&oh=af288ae28f7173faba5cb1da585bc732&oe=577B0A5A' alt='nyce' style='border: none;
-padding: 1em;' target=_blank></a>
-	
-								<!--<a href='http://www.nyce.org.mx/' target='_blank'>
-				                    <img src='http://www.nyce.org.mx/templates/theme_full/images/header-object.png' alt='nyce' style='border: none;
-padding: 1.5em;
-float: right;' target=_blank>
-								</a>-->
-			                  </div>
-			                </div>
-		
-			                <div style='background:url(http://dps.grupoiasa.com/iasaEntitlement/utils/img/contentMail.png) repeat-y;width:100%;display:block'>
-			                  <div style='padding-left:50px;padding-right:50px;padding-bottom:1px'>
-			                  <div style='border-bottom:1px solid #ededed'>
-			                  </div>
-			                  <div style='margin:20px 0px;font-size:20px;line-height:30px'>
-			                   ".$subject."
-				                   </div>
-				                   <div style='margin-bottom:30px'>
-				                   <div>
-				                   $headMessage
-				                   </div>
-				                   <br>
-				                   <div style='margin-bottom:20px'>
-				                   $urlActivacion<br>
-				                   $footerMessage
-				                   </div>
-				                   </div>
-				                   <div>
-				                   <span></span>
-				                   <div style='border-bottom:1px solid #ededed'>
-				                   </div>
-				                   </div>
-				                   	
-				                   <div style='margin:20px 0'>
-				                   Plataforma digital para el aprendizaje de Marketing Digital, SEO, Multimedia, Diseño Web, Apps y mucho mas.</b> <a href='https://www.facebook.com/maestrosdelmedia/?fref=nf'>https://www.facebook.com/maestrosdelmedia/?fref=nf</a>
-				                   </div>
-				                   <div style='margin:10px 5px;display:inline-block'></div>
-				                   	
-				                   <div style='border-bottom:1px solid #ededed'></div>
-				                    
-				                   	
-				                   <div style='font-size:9px;color:#707070'>
-				                   <br>No respondas a este mensaje.<br>
-				                   Fundación en diciembre de 2015
-				                   <br>Ver la <a href=http://www.maestrosdelmedia.com target=_blank>Política de privacidad</a>
-				                   </div></div></div><div class='yj6qo'></div>
-				                   	
-				                   <div style='background:url(http://dps.grupoiasa.com/iasaEntitlement/utils/img/footerMail.png) no-repeat;width:100%;min-height:50px;display:block' class='adL'></div></div>
-				                   </div>
-				                   </div>
-				                   </body>
-				                   	</html>";
+			$mail->Body    = "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
+								<html>
+								  <head>
+								    <meta http-equiv='Content-Type' content='text/html; charset=utf-8'/>
+								    <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+								    <title>Bienvenido a Payme</title>
+								    <style type='text/css'>
+								      body {margin: 10px 0; padding: 0 10px; background: #DCDFE0; font-size: 13px;}
+								      table {border-collapse: collapse;}
+								      td {font-family: arial, sans-serif; color: #333333;}
+								
+								      @media only screen and (max-width: 480px) {
+								        body,table,td,p,a,li,blockquote {
+								          -webkit-text-size-adjust:none !important;
+								        }
+								        table {width: 100% !important;}
+								
+								        .responsive-image img {
+								          height: auto !important;
+								          max-width: 100% !important;
+								          width: 100% !important;
+								        }
+								      }
+								    </style>
+								  </head>
+								  <body>
+								    <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+								      <tr>
+								        <td>
+								          <table border='0' cellpadding='0' cellspacing='0' align='center' width='640' bgcolor='#FFFFFF'>
+								            <tr>
+								              <td bgcolor='#F8F9F9' style='font-size: 0; line-height: 0; padding: 0 10px;' height='140' align='center' class='responsive-image'>
+								                <img src='http://getsir.mx/payme/logopayme.png' alt='' />
+								              </td>
+								            </tr>
+								            <tr><td style='font-size: 0; line-height: 0;' height='30'>&nbsp;</td></tr>
+								            <tr>
+								              <td style='padding: 10px 10px 20px 10px;'>
+								                <div style='font-size: 20px; text-align: center;'>$subject</div>
+								                <br />
+								                <div>
+								                  <h2 style='text-align: center; padding: 10px 10px 10px 10px'>$headMessage</h2>
+								                  <p style='text-align: center; font-size: 20px;'></p>
+								
+								                  <div style='margin-bottom:20px' style='text-align: center;'>
+
+								                 <p style='text-align: center;'>$urlActivacion<br><br><br>
+								                 <p>$footerMessage</p>
+								                 </div>
+								                </div>
+								              </td>
+								            </tr>
+								              <td bgcolor='#083D5F'>
+								                <table border='0' cellpadding='0' cellspacing='0' width='100%'>
+								                  <tr><td style='font-size: 0; line-height: 0;' height='15'>&nbsp;</td></tr>
+								                  <tr>
+								                    <td style='padding: 0 10px; color: #FFFFFF;     text-align: center;'>
+								                     <a href='http://paymeapp.com.mx/' style='color: white;'>Payme</a> 
+								                    </td>
+								                  </tr>
+								                  <tr><td style='font-size: 0; line-height: 0;' height='15'>&nbsp;</td></tr>
+								                </table>
+								              </td>
+								            </tr>
+								          </table>
+								        </td>
+								      </tr>
+								    </table>
+								  </body>
+								</html>";
 	
 				                   	if(!$mail->send()) {
 				                   	//echo 'Message could not be sent.';

@@ -21,9 +21,9 @@ class CronRemainders {
 			$body = '';
 			if( strlen( trim($remainder['customtext'] ) ) > 0  ) {
 				$body = $remainder['customtext'];
-				$body .= "<br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos bancarios:<br/>".$remainder['text_account'];
+				$body .= "<br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos:<br/><b>CLABE:</b>".$remainder['clabe']."<br/><b>CARD:</b>".$remainder['card']."<br/><b>PAYPAL:</b>".$remainder['paypal']."<br/><b>PHONE:</b>".$remainder['phone']."<br/><b>MORE:</b>".$remainder['text_account'];
 			}else{
-				$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b><br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos bancarios:<br/>".$remainder['text_account'];
+				$body = $remainder['text']." <b>$".$remainder['cost']."</b> to <b>".$remainder['userName']."</b> the reason is <b>".$remainder['description']."</b><br/>You can reply to this message on the following link:<br/>".$urlResponseReminderCode."<br/><br/>Datos:<br/><b>CLABE:</b>".$remainder['clabe']."<br/><b>CARD:</b>".$remainder['card']."<br/><b>PAYPAL:</b>".$remainder['paypal']."<br/><b>PHONE:</b>".$remainder['phone']."<br/><b>MORE:</b>".$remainder['text_account'];
 			}
 			
 			if(UtilsFunctions::sendMail($remainder['email'],$remainder['emailuser'], $remainder['clientName'], Constants::SUBJECT_EMAIL_REMAINDER, "Hello: ".$remainder['clientName'], $body, Constants::FOOTER_EMAIL_REMAINDER)){

@@ -28,6 +28,7 @@ class Constants{
 	const FOOTER_EMAIL_REMAINDER = "This is a remainder by the app <b>PAYME</b>.";
 	
 	
+	const SUBJECT_ACTIVATION = "Bienvenido a <b>Payme</b> ";
 	
 	const SUBJECT_EMAIL = "Confirmación de registro Kit SGDP";
 	const SUBJECT_EMAIL_CHANGE_PASSWORD = "Solicitud de cambio de contraseña Kit SGDP";

@@ -51,6 +51,10 @@ final class CronRemainderDao
 						   ,concat(users.name,' ',users.`lastname`) as userName
 						   ,users.text_account
 						   ,users.email as emailuser
+						   ,users.clabe
+					       ,users.card
+					       ,users.paypal
+					       ,users.phone
 						   ,reminders.customtext
 							FROM reminders, `projects`, clients, templates,users
 							WHERE 1 = 1

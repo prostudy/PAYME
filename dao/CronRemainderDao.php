@@ -51,6 +51,7 @@ final class CronRemainderDao
 						   ,concat(users.name,' ',users.`lastname`) as userName
 						   ,users.text_account
 						   ,users.email as emailuser
+						   ,users.name as  nameuser
 						   ,users.clabe
 					       ,users.card
 					       ,users.paypal

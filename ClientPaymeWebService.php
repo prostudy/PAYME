@@ -23,6 +23,9 @@ getClientsForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodNa
 saveClient //http://localhost/PAYME/ClientPaymeWebService.php?methodName=saveClient&userid=50&email=ogascon@iasanet.com.mx&name=Oscar&lastname=Gascon&company=CASA&description=cargo&cost=739&dateReminder=2016-03-30 11:10:07&sendnow=false&idTemplates=1
 getClientsWithProjectsAndRemindersForUser http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getClientsWithProjectsAndRemindersForUser&userid=50
 getRemindersForPojectId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersForPojectId&projectId=1
+savePayment http://localhost/PAYME/ClientPaymeWebService.php?methodName=savePayment&projectId=104&payment=199
+deletePayment http://localhost/PAYME/ClientPaymeWebService.php?methodName=deletePayment&projectId=104&idpayment=3
+updatePayment http://localhost/PAYME/ClientPaymeWebService.php?methodName=updatePayment&payment=5&idpayment=1
 
 getRemindersSentAndAnsweredByUserId http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=getRemindersSentAndAnsweredByUserId&userid=62
 setReminderAsRead http://localhost:8888/PAYME/ClientPaymeWebService.php?methodName=setReminderAsRead&idreminders=36
@@ -330,7 +333,7 @@ class ClientPaymeWebService {
 	
 	
 	/**
-	 * Recibe un conjunto de proyectos y agrega sus respectivos recordatorios
+	 * Recibe un conjunto de proyectos y agrega sus respectivos recordatorios y pagos
 	 * @param array $projects
 	 * @return array projectos con tus recordatorios
 	 */
@@ -343,6 +346,7 @@ class ClientPaymeWebService {
 		$deleted = 0 ;
 		foreach ($projects as $project){//Asigna los recordatorios  correspondientes al proyecto
 			$reminders = $clientDao->getAllRemindersForProjectId($project['idprojects'],$deleted);
+			$payments = $clientDao->getAllPaymentsForProjectId($project['idprojects']);
 			
 			$j=0;
 			foreach ($reminders as $reminder){//Asigna el template correspondiente al recordatorio
@@ -352,6 +356,7 @@ class ClientPaymeWebService {
 			}
 			
 			$projects[$i]['reminders'] = $reminders;
+			$projects[$i]['payments'] = $payments;
 			$i++;
 		}
 		return $projects;
@@ -516,6 +521,72 @@ class ClientPaymeWebService {
 		}else{
 			$response->success = false;
 			$response->message = "No se actualizo ningun proyecto.";
+		}
+		echo $response->getResponseAsJSON();
+	}
+	
+	
+	/**
+	 *  Inserta un nuevo pago a un proyecto
+	 */
+	public function savePayment(){
+		$projectId = $_REQUEST['projectId'];
+		$payment = $_REQUEST['payment'];
+		$today = date("Y-m-d H:i:s");
+		
+		$clientDao = ClientDao::Instance();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		$result = $clientDao->savePayment($projectId, $payment, $today);
+		
+		if($result['rowsPayment'] > 0 && $result['rowsPaymentProject'] > 0){
+			$response->success = true;
+			$response->message = "Se agrego el pago correctamente";
+		}else{
+			$response->success = false;
+			$response->message = "No se agrego el pago.";
+		}
+		echo $response->getResponseAsJSON();	
+	}
+	
+	
+	/**
+	 *  Elimina un pago de un proyecto determinado
+	 */
+	public function deletePayment(){
+		$projectId = $_REQUEST['projectId'];
+		$idpayment = $_REQUEST['idpayment'];
+	
+		$clientDao = ClientDao::Instance();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		$result = $clientDao->deletePayment($projectId, $idpayment);
+	
+		if($result['rowsDeleted'] > 1){
+			$response->success = true;
+			$response->message = "Se elimino el pago correctamente";
+		}else{
+			$response->success = false;
+			$response->message = "No se elimino el pago.";
+		}
+		echo $response->getResponseAsJSON();
+	}
+	
+	/**
+	 * Actualiza un pago 
+	 */
+	public function updatePayment(){
+		$payment = $_REQUEST['payment'];
+		$idpayment = $_REQUEST['idpayment'];
+	
+		$clientDao = ClientDao::Instance();
+		$response = new GenericResponse(true,$this->isJSONP,$this->callback);
+		$result = $clientDao->updatePayment($idpayment, $payment);
+	
+		if($result['rowsUpdated'] > 0){
+			$response->success = true;
+			$response->message = "Se actualizo el pago correctamente";
+		}else{
+			$response->success = false;
+			$response->message = "No se actualizo el pago.";
 		}
 		echo $response->getResponseAsJSON();
 	}

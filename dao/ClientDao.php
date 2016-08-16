@@ -200,7 +200,33 @@ final class ClientDao
 		$database = null;
 		
 		return $rows;
-	}	
+	}
+
+	/**
+	 * Recupera todos los pagos que tiene un proyecto
+	 * @param unknown $projectId
+	 * @return multitype:
+	 */
+	function getAllPaymentsForProjectId($projectId){
+		$database = new Database();
+		$rows = array();
+		try{
+				
+			$database->query('SELECT * FROM projects, projects_has_payment,payment 
+							WHERE projects.idprojects = projects_has_payment.projects_idprojects 
+							AND payment.idpayment = projects_has_payment.payment_idpayment 
+							AND projects.idprojects = :projects_idprojects');
+			$database->bind(':projects_idprojects', $projectId);
+			$rows = $database->resultset(); //$row = $database->single();
+		}catch(PDOException $e){
+			echo $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $rows;
+	}
 	
 	
 	/**
@@ -618,6 +644,122 @@ final class ClientDao
 	
 		return $deleteReminderResult;
 	}
+	
+	
+	/**
+	 * Inserta un nuevo pago a un proyecto
+	 * @param int $projectId
+	 * @param float $payment
+	 * @param date $today
+	 * @return multitype:number string NULL
+	 */
+	function savePayment($projectId,$payment,$today){
+		$database = new Database();
+		$database->beginTransaction();
+		$savePaymentResult = array();
+		$savePaymentResult['rowsPayment']  = 0;
+		$savePaymentResult['rowsPaymentProject']  = 0;
+	
+		$savePaymentResult['error'] = '';
+		try{
+			$database->query("INSERT INTO `payment` ( `payment`, `description`, `day`) VALUES (:payment, NULL, :today)");
+			$database->bind(':payment',  $payment);
+			$database->bind(':today', $today);
+			$database->execute();
+			$savePaymentResult['rowsPayment'] = $database->rowCount();
+			$savePaymentResult['lastInsertId'] = $database->lastInsertId();
+				
+				
+			$database->query("INSERT INTO `projects_has_payment` (`projects_idprojects`, `payment_idpayment`) VALUES (:projectId, :payment_idpayment)");
+			$database->bind(':projectId',  $projectId);
+			$database->bind(':payment_idpayment',  $savePaymentResult['lastInsertId']);
+			$database->execute();
+			$savePaymentResult['rowsPaymentProject'] = $database->rowCount();				
+	
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$savePaymentResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $savePaymentResult;
+	}
+	
+	
+	/**
+	 * Elimina un pago de un proyecto determinado
+	 * @param int $projectId
+	 * @param int $idpayment
+	 * @return number
+	 */
+	function deletePayment($projectId,$idpayment){
+		$database = new Database();
+		$database->beginTransaction();
+		$deletePaymentResult['rowsDeleted']  = 0;
+		$deletePaymentResult['error'] = '';
+	
+		try{
+			$database->query("DELETE FROM `projects_has_payment` WHERE `projects_has_payment`.`projects_idprojects` = :projectId AND `projects_has_payment`.`payment_idpayment` = :payment_idpayment");
+			$database->bind(':projectId', $projectId );
+			$database->bind(':payment_idpayment', $idpayment );
+			$database->execute();
+			
+			
+			$deletePaymentResult['rowsDeleted'] += $database->rowCount();
+			
+			$database->query("DELETE FROM `payment` WHERE `payment`.`idpayment` = :payment_idpayment");
+			$database->bind(':payment_idpayment', $idpayment );
+			$database->execute();
+			
+			$deletePaymentResult['rowsDeleted'] += $database->rowCount();
+			
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$deletePaymentResult['error'] = $e->getMessage();	 			
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $deletePaymentResult;
+	}
+	
+	
+	/**
+	 * Actualiza el valor de un pago
+	 * @param int $idpayment
+	 * @param int $payment
+	 * @return number
+	 */
+	function updatePayment($idpayment,$payment){
+		$database = new Database();
+		$database->beginTransaction();
+		$updatePaymentResult['rowsUpdated']  = 0;
+		$updatePaymentResult['error'] = '';
+	
+		try{
+			$database->query("UPDATE `payment` SET `payment` = :payment WHERE `payment`.`idpayment` = :idpayment");
+			$database->bind(':payment', $payment );
+			$database->bind(':idpayment', $idpayment );
+			$database->execute();
+			$updatePaymentResult['rowsUpdated'] = $database->rowCount();
+				
+			$database->endTransaction();
+		}catch(PDOException $e){
+			$database->cancelTransaction();
+			$updatePaymentResult['error'] = $e->getMessage();
+			$database->closeConnection();
+		}
+		$database->closeConnection();
+		$database = null;
+	
+		return $updatePaymentResult;
+	}
+	
 		
 }
 

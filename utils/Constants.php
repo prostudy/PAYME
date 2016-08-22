@@ -17,7 +17,7 @@ class Constants{
 	const ADMIN_EMAILS_FROM = "ogascon@getsir.mx";
 	const EMAIL_HOST = "ozer.artehosting.com.mx";
 	const EMAIL_PASSWORD = '$GmG3ts1mx';
-	const SET_FROM_NAME = 'Oscar Gascon';
+	const SET_FROM_NAME = 'Payme';
 	
 	
 	

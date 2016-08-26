@@ -7,16 +7,16 @@
 class Constants{
 	//URLS
 	const DOMAIN = "";
-	const URL_REGISTER_CONFIRMATION_CODE = "http://getsir.mx/payme/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=";
-	const URL_RESPONSE_REMINDER_CODE = "http://getsir.mx/payme/ClientPaymeWebService.php?methodName=webPageResponseReminderCode&responseCode=";//TODO:Proramar esta pagina web
-	const URL_CHANGE_PASSWORD_CODE = "http://getsir.mx/payme/PaymeWebService.php?methodName=ChangePassword&changePasswordCode=";
+	const URL_REGISTER_CONFIRMATION_CODE = "http://aplicacion.paymeapp.com.mx/aplicacionpayme/PaymeWebService.php?methodName=verifyUrlActivation&activationCode=";
+	const URL_RESPONSE_REMINDER_CODE = "http://aplicacion.paymeapp.com.mx/aplicacionpayme/ClientPaymeWebService.php?methodName=webPageResponseReminderCode&responseCode=";//TODO:Proramar esta pagina web
+	const URL_CHANGE_PASSWORD_CODE = "http://aplicacion.paymeapp.com.mx/aplicacionpayme/PaymeWebService.php?methodName=ChangePassword&changePasswordCode=";
 	const URL_AVISO_PRIVACIDAD = "";
 	const FILE_CRON_REMAINDERS_ERRORS = "./logs/cronRemindersErrors.log";
 	
 	//Email
-	const ADMIN_EMAILS_FROM = "ogascon@getsir.mx";
-	const EMAIL_HOST = "ozer.artehosting.com.mx";
-	const EMAIL_PASSWORD = '$GmG3ts1mx';
+	const ADMIN_EMAILS_FROM = "noreply@paymeapp.com.mx";
+	const EMAIL_HOST = "p3plcpnl0968.prod.phx3.secureserver.net";
+	const EMAIL_PASSWORD = 'noreply2016.';
 	const SET_FROM_NAME = 'Payme';
 	
 	

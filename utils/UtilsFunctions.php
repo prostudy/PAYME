@@ -32,7 +32,7 @@ class UtilsFunctions{
 			$mail->Username = Constants::ADMIN_EMAILS_FROM;       // SMTP username
 			$mail->Password = Constants::EMAIL_PASSWORD;          // SMTP password
 			$mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-			$mail->Port = 587;  
+			$mail->Port = 465;  
 	
 			$mail->setFrom(Constants::ADMIN_EMAILS_FROM, Constants::SET_FROM_NAME);
 			$mail->addAddress($to, $name);     // Add a recipient
